@@ -190,7 +190,9 @@ h1{text-align:center;font-size:2rem;font-weight:900;margin-bottom:4px;background
     <div class="tickets-list" id="ticketsList"></div>
   </div>
 
-  <div class="sec">🗓️ Calendrier <span style="font-size:.7rem;opacity:.4;font-weight:400">(cliquer pour saisir)</span></div>
+  <div style="text-align:center;margin-bottom:14px">
+    <button onclick="manualRefresh()" style="background:linear-gradient(135deg,#6c5ce7,#a29bfe);color:#fff;border:none;border-radius:50px;padding:10px 28px;font-weight:800;font-size:.9rem;cursor:pointer;font-family:'Nunito',sans-serif">🔄 Mettre à jour</button>
+  </div>
   <div class="calendar" id="calendar"></div>
 </div>
 
@@ -246,6 +248,7 @@ var S={
 var wonTickets=[];
 var shownTrophies=[];
 var lastSeenEventTs=0;
+var collectedTicketTs=[]; // timestamps des tickets déjà collectés localement
 
 function todayIdx(){
   var t=new Date();
@@ -305,6 +308,12 @@ function loadShared(){
   .catch(function(e){sync('⚠️ Erreur : '+e.message,'#fdcb6e');});
 }
 
+var saveTimer=null;
+function saveSharedDebounced(){
+  if(saveTimer) clearTimeout(saveTimer);
+  saveTimer=setTimeout(saveShared,2000);
+}
+
 function saveShared(){
   if(S.events&&S.events.length>30) S.events=S.events.slice(-30);
   return fetch(BIN_URL,{method:'PUT',headers:HEADERS,body:JSON.stringify(S)})
@@ -320,9 +329,9 @@ function pushEvent(type,data){
 function playEvent(ev){
   if(ev.type==='floating') showFloatingIcon(ev.data.icon,ev.data.label,ev.data.size);
   else if(ev.type==='celebration') showCelebration(ev.data.kind);
-  else if(ev.type==='ticket') spawnGoldenTicketForAll(ev.data.prize);
-  else if(ev.type==='earlybird'){spawnEarlyBirdAnim();setTimeout(function(){spawnGoldenTicketForAll(ev.data.prize);},1500);}
-  else if(ev.type==='turbo'){spawnBonusTicket(ev.data.prize);addTrophyDisplay('🚀','Turbo x'+ev.data.tranche);}
+  else if(ev.type==='ticket') spawnGoldenTicketForAll(ev.data.prize,ev.data.ts);
+  else if(ev.type==='earlybird'){spawnEarlyBirdAnim();setTimeout(function(){spawnGoldenTicketForAll(ev.data.prize,ev.data.ts);},1500);}
+  else if(ev.type==='turbo'){spawnBonusTicket(ev.data.prize,ev.data.ts);addTrophyDisplay('🚀','Turbo x'+ev.data.tranche);}
 }
 
 function sync(m,c){var b=document.getElementById('syncBar');b.textContent=m;b.style.color=c||'#55efc4';}
@@ -647,7 +656,9 @@ function spawnPlusOne(n){
   });});
 }
 
-function spawnGoldenTicketForAll(prize){
+function spawnGoldenTicketForAll(prize,ts){
+  // Ne pas réafficher un ticket déjà collecté
+  if(ts&&collectedTicketTs.indexOf(ts)>=0) return;
   var x=(10+Math.random()*80)+'vw';
   var y=(20+Math.random()*40)+'vh';
   var el=document.createElement('div');
@@ -661,18 +672,22 @@ function spawnGoldenTicketForAll(prize){
     el.style.transform='scale(1.2)';
     setTimeout(function(){el.style.transform='scale(1)';},400);
   });});
-  el.onclick=function(){el.remove();showTicketWon(prize);};
+  el.onclick=function(){
+    el.remove();
+    prize.ts=ts;
+    showTicketWon(prize);
+  };
   setTimeout(function(){if(el.parentNode){el.remove();showToast('💨 Le bon s\'est envolé !');}},45000);
 }
 
-function spawnBonusTicket(prize){
+function spawnBonusTicket(prize,ts){
   var el=document.createElement('div');
   el.style.cssText='position:fixed;left:50%;bottom:-10%;transform:translateX(-50%);z-index:750;font-size:6rem;transition:all 1.2s cubic-bezier(.22,.61,.36,1);pointer-events:none';
   el.textContent='🚀';
   document.body.appendChild(el);
   requestAnimationFrame(function(){requestAnimationFrame(function(){
     el.style.bottom='110%';
-    setTimeout(function(){el.remove();spawnGoldenTicketForAll(prize);},1200);
+    setTimeout(function(){el.remove();spawnGoldenTicketForAll(prize,ts);},1200);
   });});
   launchConfetti();setTimeout(launchConfetti,400);setTimeout(launchConfetti,800);
 }
@@ -772,6 +787,8 @@ function showTicketWon(prize){
 }
 
 function saveClaim(prize){
+  // Mémoriser le timestamp pour ne pas réafficher
+  if(prize.ts) collectedTicketTs.push(prize.ts);
   wonTickets.push(prize);
   if(!S.wonTickets) S.wonTickets=[];
   var todayStr=prize.day;
@@ -880,6 +897,11 @@ document.getElementById('modalBg').onclick=function(e){
 };
 
 // INIT
+function manualRefresh(){
+  sync('⏳ Mise à jour…');
+  loadShared().then(function(){render();sync('✅ Mis à jour · '+now());});
+}
+
 function init(){
   loadShared().then(function(){
     document.getElementById('app').style.display='block';
@@ -887,9 +909,7 @@ function init(){
     if(S.sal[ti]!==null) document.getElementById('iSal').value=S.sal[ti];
     sync('✅ Prêt · '+now());
     render();
-    setInterval(function(){
-      loadShared().then(function(){render();sync('🔄 Actualisé · '+now());});
-    },30000);
+    // Plus de setInterval — refresh manuel uniquement
   });
 }
 init();
