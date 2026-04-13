@@ -74,7 +74,7 @@ h1{text-align:center;font-size:2rem;font-weight:900;margin-bottom:4px;background
 .dc-offday{background:rgba(255,255,255,.06);color:rgba(255,255,255,.45);border:1px dashed rgba(255,255,255,.12)}
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:100;align-items:center;justify-content:center}
 .modal-bg.open{display:flex}
-.modal{background:#1e1e3f;border-radius:20px;padding:22px;width:92%;max-width:350px}
+.modal{background:#1e1e3f;border-radius:20px;padding:22px;width:92%;max-width:380px;max-height:85vh;overflow-y:auto}
 .modal h3{font-size:1rem;font-weight:900;margin-bottom:14px;text-align:center}
 .mf{margin-bottom:10px}
 .mf label{font-size:.75rem;font-weight:700;opacity:.65;display:block;margin-bottom:3px}
@@ -193,6 +193,8 @@ h1{text-align:center;font-size:2rem;font-weight:900;margin-bottom:4px;background
   <div style="text-align:center;margin-bottom:14px">
     <button onclick="manualRefresh()" style="background:linear-gradient(135deg,#6c5ce7,#a29bfe);color:#fff;border:none;border-radius:50px;padding:10px 28px;font-weight:800;font-size:.9rem;cursor:pointer;font-family:'Nunito',sans-serif">🔄 Mettre à jour</button>
   </div>
+
+  <div class="sec">🗓️ Calendrier <span style="font-size:.7rem;opacity:.4;font-weight:400">(cliquer pour saisir)</span></div>
   <div class="calendar" id="calendar"></div>
 </div>
 
@@ -202,6 +204,12 @@ h1{text-align:center;font-size:2rem;font-weight:900;margin-bottom:4px;background
     <div class="mf"><label>🎯 Objectif du jour</label><input type="number" id="mObj" placeholder="ex: 19" min="0"></div>
     <div class="mf"><label>☀️ Report du matin</label><input type="number" id="mRep" placeholder="ex: 4" min="0"></div>
     <div class="mf"><label>✍️ Ventes nettes du jour</label><input type="number" id="mSal" placeholder="0" min="0"></div>
+    <div class="mf">
+      <label>🎟️ Bons du jour</label>
+      <div id="mTicketsList" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;min-height:24px"></div>
+      <div style="font-size:.7rem;opacity:.6;margin-bottom:6px">Ajouter un bon :</div>
+      <div id="mAddTickets" style="display:flex;flex-wrap:wrap;gap:5px"></div>
+    </div>
     <div class="jr"><input type="checkbox" id="mJoker"><label for="mJoker">🃏 Joker pour ce jour</label></div>
     <div class="mbtns">
       <button class="btn-cancel" onclick="closeModal()">Annuler</button>
@@ -214,11 +222,11 @@ h1{text-align:center;font-size:2rem;font-weight:900;margin-bottom:4px;background
 <div class="cc" id="cc"></div>
 
 <script>
-var BIN_ID  = '69d64a8e36566621a88eb356';
-var API_KEY = '$2a$10$j.EvQYa3TiVfgAxZJWVcPeMvrKUWQ83egNT9ugRIUkk.HacoWpioe';
-var BIN_URL = 'https://api.jsonbin.io/v3/b/' + BIN_ID;
+var BIN_ID  = '69d7f09336566621a8969ca7';
+var API_KEY = '$2a$10$Dj63Oq4EoircmvT4pyVBxu/UN/09TFt9i9aMZGL3NlOD/dHYMrSm.';
+var BIN_URL = 'https://api.jsonbin.io/v3/b/'+BIN_ID;
 var HEADERS = {'Content-Type':'application/json','X-Master-Key':API_KEY,'X-Bin-Versioning':'false'};
-var MONTH=3, YEAR=2026, MIN_BOOST=16, MAX_JOKERS=2;
+var MONTH=3,YEAR=2026,MIN_BOOST=16,MAX_JOKERS=2;
 var DAYS=['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
 var WORKED=[1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1];
 
@@ -234,6 +242,7 @@ var BONUS_PRIZES=[
   {icon:'🎮',label:'Bon Amazon 10€ !',collectif:false},
   {icon:'💆',label:'Bon Sephora 15€ !',collectif:false}
 ];
+var ALL_PRIZES=PRIZES.concat(BONUS_PRIZES);
 
 var S={
   obj:new Array(30).fill(0),
@@ -248,7 +257,7 @@ var S={
 var wonTickets=[];
 var shownTrophies=[];
 var lastSeenEventTs=0;
-var collectedTicketTs=[]; // timestamps des tickets déjà collectés localement
+var collectedTicketTs=[];
 
 function todayIdx(){
   var t=new Date();
@@ -275,26 +284,17 @@ function loadShared(){
     if(Array.isArray(p.events)) S.events=p.events;
     if(Array.isArray(p.wonTickets)) S.wonTickets=p.wonTickets;
     if(Array.isArray(p.trophies)) S.trophies=p.trophies;
-
     var ti=todayIdx();
     var todayStr=YEAR+'-'+(MONTH+1)+'-'+ti;
-
-    // Reset milestones si nouveau jour ou invalides
     if(S.milestones&&(S.milestones.day!==ti||!S.milestones.m1||!S.milestones.m2)){
       S.milestones=null;
     }
-
-    // Bons du jour
     wonTickets=S.wonTickets.filter(function(t){return t.day===todayStr;});
     updateTicketsBar();
-
-    // Trophées du jour
-    var todayTrophies=S.trophies.filter(function(t){return t.day===todayStr;});
+    var todayTrophies=S.trophies?S.trophies.filter(function(t){return t.day===todayStr;}):[];
     for(var k=0;k<todayTrophies.length;k++){
       addTrophyDisplay(todayTrophies[k].icon,todayTrophies[k].label);
     }
-
-    // Événements nouveaux seulement (depuis minuit aujourd'hui)
     var todayStart=new Date(YEAR,MONTH,ti+1).getTime();
     lastSeenEventTs=parseInt(localStorage.getItem('lastSeenEventTs')||'0');
     if(lastSeenEventTs<todayStart) lastSeenEventTs=todayStart;
@@ -306,12 +306,6 @@ function loadShared(){
     }
   })
   .catch(function(e){sync('⚠️ Erreur : '+e.message,'#fdcb6e');});
-}
-
-var saveTimer=null;
-function saveSharedDebounced(){
-  if(saveTimer) clearTimeout(saveTimer);
-  saveTimer=setTimeout(saveShared,2000);
 }
 
 function saveShared(){
@@ -336,6 +330,11 @@ function playEvent(ev){
 
 function sync(m,c){var b=document.getElementById('syncBar');b.textContent=m;b.style.color=c||'#55efc4';}
 function now(){return new Date().toLocaleTimeString('fr-FR');}
+
+function manualRefresh(){
+  sync('⏳ Mise à jour…');
+  loadShared().then(function(){render();sync('✅ Mis à jour · '+now());});
+}
 
 function render(){renderToday();renderBooster();renderTotals();renderCalendar();}
 
@@ -462,7 +461,6 @@ function adjSal(v){
 
 function saveVentes(){
   var ti=todayIdx();
-  // Bloquer la gamification les jours non ouvrés
   if(!WORKED[ti]){showToast('⛔ Pas de challenge aujourd\'hui !');return;}
   var sal=parseInt(document.getElementById('iSal').value);
   if(isNaN(sal)||sal<0){showToast('❌ Indiquer les ventes');return;}
@@ -481,25 +479,18 @@ function saveVentes(){
   S.sal[ti]=sal;
   if(!S.events) S.events=[];
 
-  // Init milestones
   if(!S.milestones||S.milestones.day!==ti||!S.milestones.m1||!S.milestones.m2){
-    var startCumul=rep; // cumul de départ = report du matin
-    var mid=Math.round((startCumul+obj)*0.5);
-    // m1 entre startCumul+1 et mid-1
+    var mid=Math.max(1,Math.round(obj*0.5));
+    var startCumul=rep;
     var m1=Math.round(startCumul+1+Math.random()*Math.max(0,mid-startCumul-2));
-    // m2 entre mid+1 et obj-1
     var m2=Math.round(mid+1+Math.random()*Math.max(0,obj-mid-2));
     if(m1<=startCumul) m1=startCumul+1;
     if(m1>=mid) m1=Math.max(startCumul+1,mid-1);
     if(m2<=mid) m2=mid+1;
     if(m2>=obj) m2=obj-1;
     if(m2<=m1) m2=m1+1;
-    // Fallback si invalides
     if(m1<=0||m1>=obj) m1=Math.max(1,Math.round(obj*0.3));
     if(m2<=m1||m2>=obj) m2=Math.round(obj*0.7);
-    // Ajuster si déjà dépassé par le cumul actuel
-    if(m1<=prevCumul) m1done=true;
-    if(m2<=prevCumul) m2done=true;
     S.milestones={
       day:ti,m1:m1,m2:m2,
       m1done:m1<=prevCumul,
@@ -507,7 +498,9 @@ function saveVentes(){
       boostDone:prev>=MIN_BOOST,
       earlyBirdDone:false,
       lastPrizeIdx:-1,
-      lastCollectif:false
+      lastCollectif:false,
+      lastBonusIdx:-1,
+      lastBonusCollectif:false
     };
   }
 
@@ -521,35 +514,34 @@ function saveVentes(){
 
   var a=assess(ti);
 
-  // BON 1 — basé sur cumul (report + ventes)
   if(obj>0&&!S.milestones.m1done&&prevCumul<S.milestones.m1&&newCumul>=S.milestones.m1){
     S.milestones.m1done=true;
+    var ts1=Date.now();
     var p1=randomPrize();
-    pushEvent('ticket',{prize:p1});
-    setTimeout(function(){spawnGoldenTicketForAll(p1);},400);
+    pushEvent('ticket',{prize:p1,ts:ts1});
+    setTimeout(function(){spawnGoldenTicketForAll(p1,ts1);},400);
   }
 
-  // BON 2 — basé sur cumul (report + ventes)
   if(obj>0&&!S.milestones.m2done&&prevCumul<S.milestones.m2&&newCumul>=S.milestones.m2){
     S.milestones.m2done=true;
+    var ts2=Date.now()+1;
     var p2=randomPrize();
-    pushEvent('ticket',{prize:p2});
-    setTimeout(function(){spawnGoldenTicketForAll(p2);},400);
+    pushEvent('ticket',{prize:p2,ts:ts2});
+    setTimeout(function(){spawnGoldenTicketForAll(p2,ts2);},400);
   }
 
-  // BOOSTER 50%
   if(!prevBoostHalf&&sal>=8){
     pushEvent('floating',{icon:'⚡',label:'50% Booster !',size:'medium'});
     showFloatingIcon('⚡','50% Booster !','medium');
   }
 
-  // BOOSTER 100%
   if(a.boostOk&&!prevBoost){
     if(!S.milestones.boostDone){
       S.milestones.boostDone=true;
+      var ts3=Date.now()+2;
       var p3=randomPrize();
-      pushEvent('ticket',{prize:p3});
-      setTimeout(function(){spawnBonusTicket(p3);},600);
+      pushEvent('ticket',{prize:p3,ts:ts3});
+      setTimeout(function(){spawnBonusTicket(p3,ts3);},600);
     }
     pushEvent('floating',{icon:'⚡',label:'BOOSTER DÉCLENCHÉ !',size:'big'});
     pushEvent('celebration',{kind:'boost'});
@@ -557,13 +549,11 @@ function saveVentes(){
     showCelebration('boost');
   }
 
-  // OBJECTIF 50%
   if(obj>0&&!prevObjHalf&&newCumul>=Math.round(obj*0.5)){
     pushEvent('floating',{icon:'🎯',label:'50% Objectif !',size:'medium'});
     showFloatingIcon('🎯','50% Objectif !','medium');
   }
 
-  // OBJECTIF 100%
   if(a.objOk&&!prevObj){
     pushEvent('floating',{icon:'🎯',label:'OBJECTIF ATTEINT !',size:'big'});
     pushEvent('celebration',{kind:'obj'});
@@ -571,27 +561,27 @@ function saveVentes(){
     showCelebration('obj');
   }
 
-  // EARLY BIRD : 7 contrats avant 14h
   if(!S.milestones.earlyBirdDone&&sal>=7&&(new Date().getHours()<14)){
     S.milestones.earlyBirdDone=true;
+    var tseb=Date.now()+3;
     var pb=randomBonusPrize();
-    pushEvent('earlybird',{prize:pb});
+    pushEvent('earlybird',{prize:pb,ts:tseb});
     spawnEarlyBirdAnim();
-    setTimeout(function(){spawnGoldenTicketForAll(pb);},1500);
+    setTimeout(function(){spawnGoldenTicketForAll(pb,tseb);},1500);
     addTrophy('🌅','Early Bird !',todayStr);
   }
 
-  // TURBO : 20, 25, 30... (tranches de 5 à partir de 20)
   if(a.boostOk&&sal>=20){
     var newTranches=Math.floor((sal-20)/5)+1;
     var prevTranches=prev>=20?Math.floor((prev-20)/5)+1:0;
     if(newTranches>prevTranches){
       for(var t=prevTranches+1;t<=newTranches;t++){
         (function(tranche){
+          var tst=Date.now()+tranche*10;
           var pt=randomBonusPrize();
-          pushEvent('turbo',{prize:pt,tranche:tranche});
+          pushEvent('turbo',{prize:pt,tranche:tranche,ts:tst});
           setTimeout(function(){
-            spawnBonusTicket(pt);
+            spawnBonusTicket(pt,tst);
             addTrophy('🚀','Turbo x'+tranche,todayStr);
           },tranche*400);
         })(t);
@@ -602,46 +592,32 @@ function saveVentes(){
   saveShared();
 }
 
-// PRIZES
 function randomPrize(){
   var lastIdx=S.milestones?S.milestones.lastPrizeIdx:-1;
   var lastCollectif=S.milestones?S.milestones.lastCollectif:false;
-  // Alterner collectif/individuel
   var avail=[];
   for(var i=0;i<PRIZES.length;i++){
-    if(i!==lastIdx && PRIZES[i].collectif!==lastCollectif) avail.push(i);
+    if(i!==lastIdx&&PRIZES[i].collectif!==lastCollectif) avail.push(i);
   }
-  // Si aucun dispo avec alternance, prendre n'importe lequel sauf le dernier
-  if(avail.length===0){
-    for(var i=0;i<PRIZES.length;i++){if(i!==lastIdx) avail.push(i);}
-  }
+  if(avail.length===0){for(var i=0;i<PRIZES.length;i++){if(i!==lastIdx) avail.push(i);}}
   var idx=avail[Math.floor(Math.random()*avail.length)];
-  if(S.milestones){
-    S.milestones.lastPrizeIdx=idx;
-    S.milestones.lastCollectif=PRIZES[idx].collectif;
-  }
+  if(S.milestones){S.milestones.lastPrizeIdx=idx;S.milestones.lastCollectif=PRIZES[idx].collectif;}
   return PRIZES[idx];
 }
 
 function randomBonusPrize(){
-  var lastCollectif=S.milestones?S.milestones.lastBonusCollectif:false;
   var lastIdx=S.milestones?S.milestones.lastBonusIdx:-1;
+  var lastCollectif=S.milestones?S.milestones.lastBonusCollectif:false;
   var avail=[];
   for(var i=0;i<BONUS_PRIZES.length;i++){
     if(i!==lastIdx&&BONUS_PRIZES[i].collectif!==lastCollectif) avail.push(i);
   }
-  if(avail.length===0){
-    for(var i=0;i<BONUS_PRIZES.length;i++){if(i!==lastIdx) avail.push(i);}
-  }
+  if(avail.length===0){for(var i=0;i<BONUS_PRIZES.length;i++){if(i!==lastIdx) avail.push(i);}}
   var idx=avail[Math.floor(Math.random()*avail.length)];
-  if(S.milestones){
-    S.milestones.lastBonusIdx=idx;
-    S.milestones.lastBonusCollectif=BONUS_PRIZES[idx].collectif;
-  }
+  if(S.milestones){S.milestones.lastBonusIdx=idx;S.milestones.lastBonusCollectif=BONUS_PRIZES[idx].collectif;}
   return BONUS_PRIZES[idx];
 }
 
-// ANIMATIONS
 function spawnPlusOne(n){
   var el=document.createElement('div');
   el.className='plus-one';
@@ -657,7 +633,6 @@ function spawnPlusOne(n){
 }
 
 function spawnGoldenTicketForAll(prize,ts){
-  // Ne pas réafficher un ticket déjà collecté
   if(ts&&collectedTicketTs.indexOf(ts)>=0) return;
   var x=(10+Math.random()*80)+'vw';
   var y=(20+Math.random()*40)+'vh';
@@ -672,11 +647,7 @@ function spawnGoldenTicketForAll(prize,ts){
     el.style.transform='scale(1.2)';
     setTimeout(function(){el.style.transform='scale(1)';},400);
   });});
-  el.onclick=function(){
-    el.remove();
-    prize.ts=ts;
-    showTicketWon(prize);
-  };
+  el.onclick=function(){el.remove();prize.ts=ts;showTicketWon(prize);};
   setTimeout(function(){if(el.parentNode){el.remove();showToast('💨 Le bon s\'est envolé !');}},45000);
 }
 
@@ -697,7 +668,7 @@ function spawnEarlyBirdAnim(){
   el.style.cssText='position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) scale(0);z-index:750;text-align:center;pointer-events:none;transition:all .6s cubic-bezier(.34,1.56,.64,1)';
   el.innerHTML='<div style="font-size:9rem;filter:drop-shadow(0 0 40px #f9ca24)">🌅</div>'+
     '<div style="font-size:1.6rem;font-weight:900;color:#f9ca24;text-shadow:0 0 20px gold;margin-top:8px">EARLY BIRD !</div>'+
-    '<div style="font-size:1rem;font-weight:700;color:#fff;opacity:.9;margin-top:4px">7 contrats avant 14h — Bonus débloqué !</div>';
+    '<div style="font-size:1rem;font-weight:700;color:#fff;opacity:.9;margin-top:4px">7 contrats avant 14h !</div>';
   document.body.appendChild(el);
   requestAnimationFrame(function(){requestAnimationFrame(function(){
     el.style.transform='translate(-50%,-50%) scale(1)';
@@ -744,7 +715,6 @@ function showCelebration(type){
   document.body.appendChild(overlay);
 }
 
-// TICKETS
 function showTicketWon(prize){
   var ti=todayIdx();
   var todayStr=YEAR+'-'+(MONTH+1)+'-'+ti;
@@ -755,45 +725,41 @@ function showTicketWon(prize){
       '<div class="tc-icon">'+prize.icon+'</div>'+
       '<div class="tc-title">🎉 BON COLLECTIF !</div>'+
       '<div class="tc-prize">'+prize.label+'</div>'+
-      '<div class="tc-sub">Toute l\'équipe en profite — réclamez au manager !</div>'+
+      '<div class="tc-sub">Toute l\'équipe en profite !</div>'+
       '<button class="tc-btn" id="claimCollectifBtn">🎊 On y a droit !</button>'+
       '</div>';
     document.body.appendChild(overlay);
     document.getElementById('claimCollectifBtn').onclick=function(){
-      saveClaim({icon:prize.icon,label:prize.label,day:todayStr,collectif:true,tri:'ÉQUIPE'});
-      overlay.remove();
-      showToast('🎉 Bon collectif enregistré !');
+      saveClaim({icon:prize.icon,label:prize.label,day:todayStr,collectif:true,tri:'ÉQUIPE',ts:prize.ts||Date.now()});
+      overlay.remove();showToast('🎉 Bon collectif enregistré !');
     };
   } else {
     overlay.innerHTML='<div class="ticket-card">'+
       '<div class="tc-icon">'+prize.icon+'</div>'+
       '<div class="tc-title">🎉 BON INDIVIDUEL !</div>'+
       '<div class="tc-prize">'+prize.label+'</div>'+
-      '<div class="tc-sub">Entre ton trigramme pour réclamer !</div>'+
+      '<div class="tc-sub">Entre ton trigramme !</div>'+
       '<input class="tri-input" id="triInput" type="text" maxlength="3" placeholder="ex: CLR">'+
-      '<button class="tc-btn" id="claimIndBtn">✅ Réclamer mon bon !</button>'+
+      '<button class="tc-btn" id="claimIndBtn">✅ Réclamer !</button>'+
       '</div>';
     document.body.appendChild(overlay);
     setTimeout(function(){var inp=document.getElementById('triInput');if(inp)inp.focus();},100);
     document.getElementById('claimIndBtn').onclick=function(){
       var tri=document.getElementById('triInput').value.trim().toUpperCase();
       if(tri.length<2){showToast('❌ Entre ton trigramme !');return;}
-      saveClaim({icon:prize.icon,label:prize.label,day:todayStr,collectif:false,tri:tri});
-      overlay.remove();
-      showToast('🎉 Bon attribué à '+tri+' !');
+      saveClaim({icon:prize.icon,label:prize.label,day:todayStr,collectif:false,tri:tri,ts:prize.ts||Date.now()});
+      overlay.remove();showToast('🎉 Bon attribué à '+tri+' !');
     };
   }
   launchConfetti();
 }
 
 function saveClaim(prize){
-  // Mémoriser le timestamp pour ne pas réafficher
   if(prize.ts) collectedTicketTs.push(prize.ts);
-  wonTickets.push(prize);
   if(!S.wonTickets) S.wonTickets=[];
-  var todayStr=prize.day;
-  S.wonTickets=S.wonTickets.filter(function(t){return t.day===todayStr;});
+  // Ajouter simplement sans écraser
   S.wonTickets.push(prize);
+  wonTickets=S.wonTickets.filter(function(t){return t.day===prize.day;});
   saveShared();
   updateTicketsBar();
 }
@@ -822,10 +788,8 @@ function updateTicketsBar(){
   }
 }
 
-// TROPHÉES
 function addTrophy(icon,label,todayStr){
   if(!S.trophies) S.trophies=[];
-  S.trophies=S.trophies.filter(function(t){return t.day===todayStr;});
   S.trophies.push({icon:icon,label:label,day:todayStr});
   addTrophyDisplay(icon,label);
 }
@@ -835,12 +799,12 @@ function addTrophyDisplay(icon,label){
   if(shownTrophies.indexOf(key)>=0) return;
   shownTrophies.push(key);
   var bar=document.getElementById('trophiesBar');
-  var list=document.getElementById('trophiesList');
+  var list2=document.getElementById('trophiesList');
   bar.style.display='flex';
   var t=document.createElement('div');
   t.className='trophy-item';
   t.textContent=icon+' '+label;
-  list.appendChild(t);
+  list2.appendChild(t);
 }
 
 function launchConfetti(){
@@ -865,8 +829,8 @@ function showToast(m){
   setTimeout(function(){t.classList.remove('show');},2500);
 }
 
-// MODAL
 var editIdx=-1;
+
 function openModal(i){
   editIdx=i;
   var d=new Date(YEAR,MONTH,i+1);
@@ -875,9 +839,76 @@ function openModal(i){
   document.getElementById('mRep').value=S.rep[i]||'';
   document.getElementById('mSal').value=S.sal[i]!==null?S.sal[i]:'';
   document.getElementById('mJoker').checked=S.jokers[i]||false;
+
+  var todayStr=YEAR+'-'+(MONTH+1)+'-'+i;
+  var dayTickets=S.wonTickets?S.wonTickets.filter(function(t){return t.day===todayStr;}):[];
+
+  var list=document.getElementById('mTicketsList');
+  list.innerHTML='';
+  if(dayTickets.length===0){
+    list.innerHTML='<span style="font-size:.72rem;opacity:.5">Aucun bon</span>';
+  } else {
+    for(var k=0;k<dayTickets.length;k++){
+      var tk=dayTickets[k];
+      var el=document.createElement('div');
+      el.style.cssText='background:linear-gradient(135deg,#f9ca24,#f0932b);border-radius:8px;padding:4px 8px;font-size:.7rem;font-weight:800;color:#1a1a2e;display:flex;align-items:center;gap:4px;margin-bottom:2px';
+      el.innerHTML=tk.icon+' '+(tk.tri?tk.tri+' — ':'')+tk.label;
+      var del=document.createElement('span');
+      del.textContent='❌';
+      del.style.cssText='cursor:pointer;margin-left:4px';
+      (function(dayStr,kk){del.onclick=function(){removeModalTicket(dayStr,kk);};})(todayStr,k);
+      el.appendChild(del);
+      list.appendChild(el);
+    }
+  }
+
+  var addDiv=document.getElementById('mAddTickets');
+  addDiv.innerHTML='';
+  for(var m=0;m<ALL_PRIZES.length;m++){
+    var pr=ALL_PRIZES[m];
+    var btn=document.createElement('button');
+    btn.style.cssText='background:rgba(249,202,36,.15);border:1px solid rgba(249,202,36,.4);color:#f9ca24;border-radius:8px;padding:4px 8px;font-size:.68rem;font-weight:800;cursor:pointer;font-family:Nunito,sans-serif;margin-bottom:3px';
+    btn.textContent='+ '+pr.icon+' '+pr.label.substring(0,18)+(pr.label.length>18?'…':'');
+    (function(prize,dayIdx2,dayStr){btn.onclick=function(){addModalTicket(prize,dayStr,dayIdx2);};})(pr,i,todayStr);
+    addDiv.appendChild(btn);
+  }
+
   document.getElementById('modalBg').classList.add('open');
 }
+
+function addModalTicket(prize,todayStr,dayIdx2){
+  var tri='ÉQUIPE';
+  if(!prize.collectif){
+    var input=prompt('Trigramme du commercial :','');
+    if(!input) return;
+    tri=input.toUpperCase().trim();
+  }
+  var t={icon:prize.icon,label:prize.label,day:todayStr,collectif:prize.collectif,tri:tri,ts:Date.now()};
+  if(!S.wonTickets) S.wonTickets=[];
+  S.wonTickets.push(t);
+  var ti=todayIdx();
+  if(dayIdx2===ti){wonTickets.push(t);updateTicketsBar();}
+  saveShared();
+  openModal(dayIdx2);
+  showToast('✅ Bon ajouté !');
+}
+
+function removeModalTicket(todayStr,idx){
+  if(!S.wonTickets) return;
+  var dayTickets=S.wonTickets.filter(function(t){return t.day===todayStr;});
+  var toRemove=dayTickets[idx];
+  S.wonTickets=S.wonTickets.filter(function(t){return t!==toRemove;});
+  var ti=todayIdx();
+  var ts=YEAR+'-'+(MONTH+1)+'-'+ti;
+  wonTickets=S.wonTickets.filter(function(t){return t.day===ts;});
+  saveShared();
+  openModal(editIdx);
+  updateTicketsBar();
+  showToast('🗑️ Bon supprimé !');
+}
+
 function closeModal(){document.getElementById('modalBg').classList.remove('open');editIdx=-1;}
+
 function saveModal(){
   if(editIdx<0) return;
   var o=parseInt(document.getElementById('mObj').value);
@@ -892,15 +923,10 @@ function saveModal(){
   render();saveShared();closeModal();
   showToast('✅ Mis à jour !');
 }
+
 document.getElementById('modalBg').onclick=function(e){
   if(e.target===document.getElementById('modalBg')) closeModal();
 };
-
-// INIT
-function manualRefresh(){
-  sync('⏳ Mise à jour…');
-  loadShared().then(function(){render();sync('✅ Mis à jour · '+now());});
-}
 
 function init(){
   loadShared().then(function(){
@@ -909,7 +935,6 @@ function init(){
     if(S.sal[ti]!==null) document.getElementById('iSal').value=S.sal[ti];
     sync('✅ Prêt · '+now());
     render();
-    // Plus de setInterval — refresh manuel uniquement
   });
 }
 init();
