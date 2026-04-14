@@ -122,21 +122,21 @@ h1{text-align:center;font-size:2rem;font-weight:900;margin-bottom:4px;background
 @media (max-width:600px){
   body{padding:12px;padding-bottom:32px}
 
-  /* KPI : 2 colonnes au lieu de 4 qui se serrent */
+  /* KPI : 2 colonnes */
   .kpi-row{display:grid;grid-template-columns:1fr 1fr;gap:7px;flex-wrap:unset}
   .kpi{min-width:unset}
   .kpi .kv{font-size:1.45rem}
 
-  /* Barre de progression : texte plus petit */
+  /* Barre de progression */
   .bar-text{font-size:.72rem}
 
-  /* Label du irow masqué sur très petits écrans pour gagner de la place */
-  .irow label{width:90px;font-size:.7rem}
+  /* ── IROW : label masqué, boutons +/- réduits, input ne déborde plus ── */
+  .irow{gap:5px}
+  .irow label{display:none}
+  .bsm{padding:10px 12px;font-size:1rem;min-width:36px}
+  .irow input{min-width:0;font-size:1rem;padding:10px 4px}
 
-  /* Boutons +/- plus faciles à toucher */
-  .bsm{padding:10px 14px;font-size:1.2rem}
-
-  /* Booster grid : cases un peu plus larges pour le doigt */
+  /* Booster grid */
   .bp-grid{grid-template-columns:repeat(auto-fill,minmax(32px,1fr))}
   .bpd{height:36px}
 
@@ -144,35 +144,32 @@ h1{text-align:center;font-size:2rem;font-weight:900;margin-bottom:4px;background
   .totals{display:grid;grid-template-columns:1fr 1fr;gap:8px;flex-wrap:unset}
   .tb{min-width:unset}
 
-  /* Calendrier : cellules adaptées au mobile */
+  /* Calendrier */
   .calendar{grid-template-columns:repeat(auto-fill,minmax(70px,1fr));gap:5px}
   .dc{padding:7px 4px}
   .dc .dn{font-size:1.1rem}
   .dc .dd{font-size:.5rem}
   .dc .dobj,.dc .dres,.dc .drep{font-size:.52rem}
 
-  /* Modal : bottom sheet */
+  /* Modal bottom sheet */
   .modal-bg{align-items:flex-end;justify-content:center}
   .modal{border-radius:20px 20px 0 0;width:100%;max-width:100%;max-height:90vh;padding:18px 16px}
 
-  /* Boutons d'action : pleine largeur */
+  /* Boutons d'action */
   div[style*="justify-content:center"]{flex-direction:column;align-items:stretch}
   div[style*="justify-content:center"] button{width:100%;text-align:center}
 
-  /* Tickets & trophées : taille texte */
+  /* Tickets & trophées */
   .ticket-won{font-size:.68rem}
   .trophy-item{font-size:.7rem}
 
-  /* Toast : évite le débordement */
+  /* Toast */
   .toast{max-width:88vw;white-space:normal;text-align:center;font-size:.8rem}
 
-  /* Inputs numériques : clavier numérique iOS */
-  input[type="number"]{-webkit-appearance:none;appearance:none}
-
-  /* Touch delay supprimé */
+  /* Touch */
   button,.bsm,.dc,.bpd,.ticket-won{touch-action:manipulation}
 
-  /* Safe area iPhone avec encoche */
+  /* Safe area iPhone */
   @supports(padding-bottom:env(safe-area-inset-bottom)){
     body{padding-bottom:calc(32px + env(safe-area-inset-bottom))}
     .modal{padding-bottom:calc(18px + env(safe-area-inset-bottom))}
@@ -181,7 +178,7 @@ h1{text-align:center;font-size:2rem;font-weight:900;margin-bottom:4px;background
 
 /* ===== TRÈS PETITS ÉCRANS (≤360px) ===== */
 @media (max-width:360px){
-  .irow label{display:none}
+  .bsm{padding:8px 9px;font-size:.9rem;min-width:32px}
   .kpi .kv{font-size:1.2rem}
   .calendar{grid-template-columns:repeat(auto-fill,minmax(58px,1fr))}
 }
