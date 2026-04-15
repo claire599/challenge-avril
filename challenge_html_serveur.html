@@ -357,7 +357,8 @@ function loadShared(){
 }
 
 function saveShared(){
-  if(S.events&&S.events.length>30) S.events=S.events.slice(-30);
+  // CORRECTION : limite portée à 100 pour ne pas perdre les events du jour
+  if(S.events&&S.events.length>100) S.events=S.events.slice(-100);
   return fetch(BIN_URL,{method:'PUT',headers:HEADERS,body:JSON.stringify(S)})
   .then(function(){sync('✅ Synchronisé · '+now());})
   .catch(function(){sync('⚠️ Erreur sync','#fdcb6e');});
@@ -489,7 +490,6 @@ function saveRdv(){
   var prev=S.rdv[ti]||0;
   var added=rdv-prev;
   S.rdv[ti]=rdv;
-  // Téléphone volant pour chaque +1 RDV
   if(added>0){
     for(var n=0;n<added;n++){
       (function(d){setTimeout(function(){spawnFlyingPhone();},d);})(n*180);
@@ -506,6 +506,7 @@ function saveRdv(){
   }
   render();saveShared();
 }
+
 function spawnFlyingPhone(){
   var x=(15+Math.random()*70);
   var el=document.createElement('div');
@@ -516,7 +517,6 @@ function spawnFlyingPhone(){
   document.body.appendChild(el);
   setTimeout(function(){el.remove();},1200);
 }
-
 
 function spawnMiniTicket(prize){
   var ti=todayIdx(),todayStr=YEAR+'-'+(MONTH+1)+'-'+ti;
@@ -582,14 +582,14 @@ function saveVentes(){
   }
   if(obj>0&&!S.milestones.m2done&&prevCumul<S.milestones.m2&&newCumul>=S.milestones.m2){
     S.milestones.m2done=true;var ts2=Date.now()+1;
-    var p2=randomPrize(); // alternance garantie par randomPrize()
+    var p2=randomPrize();
     pushEvent('ticket',{prize:p2,ts:ts2});setTimeout(function(){spawnGoldenTicketForAll(p2,ts2);},400);
   }
   if(!prevBoostHalf&&sal>=8){pushEvent('floating',{icon:'⚡',label:'50% Booster !',size:'medium'});showFloatingIcon('⚡','50% Booster !','medium');}
   if(a.boostOk&&!prevBoost){
     if(!S.milestones.boostDone){
       S.milestones.boostDone=true;var ts3=Date.now()+2;
-      var p3=randomPrize(); // alternance garantie
+      var p3=randomPrize();
       pushEvent('ticket',{prize:p3,ts:ts3});setTimeout(function(){spawnBonusTicket(p3,ts3);},600);
     }
     pushEvent('floating',{icon:'⚡',label:'BOOSTER DÉCLENCHÉ !',size:'big'});pushEvent('celebration',{kind:'boost'});
@@ -599,7 +599,7 @@ function saveVentes(){
   if(a.objOk&&!prevObj){pushEvent('floating',{icon:'🎯',label:'OBJECTIF ATTEINT !',size:'big'});pushEvent('celebration',{kind:'obj'});showFloatingIcon('🎯','OBJECTIF ATTEINT !','big');showCelebration('obj');}
   if(!S.milestones.earlyBirdDone&&sal>=7&&(new Date().getHours()<14)){
     S.milestones.earlyBirdDone=true;var tseb=Date.now()+3;
-    var pb=randomBonusPrize(); // alternance partagée avec randomPrize()
+    var pb=randomBonusPrize();
     pushEvent('floating',{icon:'🌅',label:'EARLY BIRD !',size:'big'});
     pushEvent('earlybird',{prize:pb,ts:tseb});
     spawnEarlyBirdAnim();
@@ -618,7 +618,7 @@ function saveVentes(){
 function randomPrize(){
   var li=S.milestones?S.milestones.lastPrizeIdx:-1;
   var lc=S.milestones?(S.milestones.lastCollectif||false):false;
-  var wantC=!lc; // alterne systématiquement
+  var wantC=!lc;
   var av=[];for(var i=0;i<PRIZES.length;i++){if(i!==li&&PRIZES[i].collectif===wantC)av.push(i);}
   if(!av.length){for(var i=0;i<PRIZES.length;i++){if(i!==li)av.push(i);}}
   if(!av.length)av=[0];
@@ -628,7 +628,6 @@ function randomPrize(){
 }
 
 function randomBonusPrize(){
-  // FIX: utilise le MÊME flag lastCollectif que randomPrize() pour garantir l'alternance globale
   var lc=S.milestones?(S.milestones.lastCollectif||false):false;
   var li=S.milestones?S.milestones.lastBonusIdx:-1;
   var wantC=!lc;
@@ -740,7 +739,6 @@ function updateTicketsBar(){
   for(var i=0;i<wonTickets.length;i++){
     var t=wonTickets[i];
     var btn=document.createElement('div');
-    // turquoise pour les bons RDV, doré pour les autres
     btn.className='ticket-won'+(t.rdv?' rdv-ticket':'');
     btn.textContent=t.icon+' '+(t.tri?t.tri+' — ':'')+t.label+(t.rdv?' 📞':'');
     (function(idx){btn.onclick=function(){
@@ -800,12 +798,23 @@ function showPalmares(){
   ov.innerHTML=html;document.body.appendChild(ov);
 }
 
+// CORRECTION : replayCelebrations gère aussi les types earlybird et turbo
+// pour les events pushés avant la mise à jour du code (sans floating associé)
 function replayCelebrations(){
   var ti=todayIdx(),todayStart=new Date(YEAR,MONTH,ti+1).getTime();
-  var evs=S.events?S.events.filter(function(ev){return ev.ts>=todayStart&&(ev.type==='celebration'||ev.type==='floating');}):[];
+  var evs=S.events?S.events.filter(function(ev){
+    return ev.ts>=todayStart&&(ev.type==='celebration'||ev.type==='floating'||ev.type==='earlybird'||ev.type==='turbo');
+  }):[];
   if(!evs.length){showToast('Aucune célébration aujourd\'hui encore !');return;}
   var delay=0;
-  for(var i=0;i<evs.length;i++){(function(ev,d){setTimeout(function(){playEvent(ev);},d);})(evs[i],delay);delay+=2000;}
+  for(var i=0;i<evs.length;i++){
+    (function(ev,d){setTimeout(function(){
+      if(ev.type==='floating'||ev.type==='celebration') playEvent(ev);
+      else if(ev.type==='earlybird') showFloatingIcon('🌅','EARLY BIRD !','big');
+      else if(ev.type==='turbo') showFloatingIcon('🚀','TURBO x'+(ev.data.tranche||'')+'!','big');
+    },d);})(evs[i],delay);
+    delay+=2000;
+  }
 }
 
 function launchConfetti(){
