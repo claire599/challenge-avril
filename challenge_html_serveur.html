@@ -329,7 +329,13 @@ function loadShared(){
     var p=j.record||j;
     if(Array.isArray(p.obj)&&p.obj.length===30) S.obj=p.obj;
     if(Array.isArray(p.rep)&&p.rep.length===30) S.rep=p.rep;
-    if(Array.isArray(p.sal)&&p.sal.length===30) S.sal=p.sal;
+    if(Array.isArray(p.sal)&&p.sal.length===30){
+      // Protection anti-régression : ne jamais écraser avec une valeur inférieure à ce qu'on a en mémoire
+      for(var i=0;i<30;i++){
+        if(p.sal[i]!==null&&S.sal[i]!==null&&p.sal[i]<S.sal[i]) p.sal[i]=S.sal[i];
+      }
+      S.sal=p.sal;
+    }
     if(Array.isArray(p.rdv)&&p.rdv.length===30) S.rdv=p.rdv;
     if(Array.isArray(p.jokers)&&p.jokers.length===30) S.jokers=p.jokers;
     if(p.milestones) S.milestones=p.milestones;
@@ -554,6 +560,13 @@ function saveVentes(){
   if(!WORKED[ti]){showToast('⛔ Pas de challenge aujourd\'hui !');return;}
   var sal=parseInt(document.getElementById('iSal').value);
   if(isNaN(sal)||sal<0){showToast('❌ Indiquer les ventes');return;}
+  // Protection anti-régression : on ne sauvegarde jamais moins que ce qui est déjà en mémoire
+  var currentSal=S.sal[ti]!==null?S.sal[ti]:0;
+  if(sal<currentSal){
+    showToast('⚠️ Valeur inférieure au cumul actuel ('+currentSal+'). Annulé.');
+    document.getElementById('iSal').value=currentSal;
+    return;
+  }
   var prev=S.sal[ti]||0,added=sal-prev,rep=S.rep[ti]||0,obj=S.obj[ti]||0;
   var prevCumul=prev+rep,newCumul=sal+rep;
   var prevBoostHalf=prev>=8,prevObjHalf=obj>0&&prevCumul>=Math.round(obj*0.5);
