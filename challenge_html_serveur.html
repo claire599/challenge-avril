@@ -493,24 +493,29 @@ function saveRdv(){
   var ti=todayIdx();
   var rdv=parseInt(document.getElementById('iRdv').value);
   if(isNaN(rdv)||rdv<0){showToast('❌ Valeur invalide');return;}
-  var prev=S.rdv[ti]||0;
-  var added=rdv-prev;
-  S.rdv[ti]=rdv;
-  if(added>0){
-    for(var n=0;n<added;n++){
-      (function(d){setTimeout(function(){spawnFlyingPhone();},d);})(n*180);
+  // FIX anti-régression : rechargement depuis JSONBin avant save
+  // pour ne pas écraser S.sal avec une valeur périmée en mémoire locale
+  sync('⏳ Mise à jour RDV…');
+  loadShared().then(function(){
+    var prev=S.rdv[ti]||0;
+    var added=rdv-prev;
+    S.rdv[ti]=rdv;
+    if(added>0){
+      for(var n=0;n<added;n++){
+        (function(d){setTimeout(function(){spawnFlyingPhone();},d);})(n*180);
+      }
     }
-  }
-  var newT=Math.floor(rdv/3),prevT=Math.floor(prev/3);
-  if(newT>prevT){
-    for(var t=prevT+1;t<=newT;t++){
-      (function(tr){
-        var prize=RDV_PRIZES[Math.floor(Math.random()*RDV_PRIZES.length)];
-        setTimeout(function(){spawnMiniTicket(prize);},tr*300);
-      })(t);
+    var newT=Math.floor(rdv/3),prevT=Math.floor(prev/3);
+    if(newT>prevT){
+      for(var t=prevT+1;t<=newT;t++){
+        (function(tr){
+          var prize=RDV_PRIZES[Math.floor(Math.random()*RDV_PRIZES.length)];
+          setTimeout(function(){spawnMiniTicket(prize);},tr*300);
+        })(t);
+      }
     }
-  }
-  render();saveShared();
+    render();saveShared();
+  });
 }
 
 function spawnFlyingPhone(){
@@ -890,14 +895,23 @@ function saveModal(){
   if(editIdx<0)return;
   var o=parseInt(document.getElementById('mObj').value),r=parseInt(document.getElementById('mRep').value);
   var s=document.getElementById('mSal').value,rdv=document.getElementById('mRdv').value;
-  S.obj[editIdx]=!isNaN(o)&&o>=0?o:0;S.rep[editIdx]=!isNaN(r)&&r>=0?r:0;
-  S.sal[editIdx]=s!==''&&!isNaN(parseInt(s))?parseInt(s):null;
-  S.rdv[editIdx]=rdv!==''&&!isNaN(parseInt(rdv))?parseInt(rdv):null;
-  S.jokers[editIdx]=document.getElementById('mJoker').checked;
-  var ti=todayIdx();
-  if(editIdx===ti&&S.sal[ti]!==null)document.getElementById('iSal').value=S.sal[ti];
-  if(editIdx===ti&&S.rdv[ti]!==null)document.getElementById('iRdv').value=S.rdv[ti];
-  render();saveShared();closeModal();showToast('✅ Mis à jour !');
+  var idx=editIdx;
+  // FIX anti-régression : rechargement depuis JSONBin avant save
+  loadShared().then(function(){
+    S.obj[idx]=!isNaN(o)&&o>=0?o:0;S.rep[idx]=!isNaN(r)&&r>=0?r:0;
+    var ti=todayIdx();
+    var newSal=s!==''&&!isNaN(parseInt(s))?parseInt(s):null;
+    if(idx===ti&&newSal!==null&&S.sal[idx]!==null&&newSal<S.sal[idx]){
+      showToast('⚠️ Valeur ventes inférieure au cumul actuel ('+S.sal[idx]+'). Annulé.');
+      closeModal();return;
+    }
+    S.sal[idx]=newSal;
+    S.rdv[idx]=rdv!==''&&!isNaN(parseInt(rdv))?parseInt(rdv):null;
+    S.jokers[idx]=document.getElementById('mJoker').checked;
+    if(idx===ti&&S.sal[ti]!==null)document.getElementById('iSal').value=S.sal[ti];
+    if(idx===ti&&S.rdv[ti]!==null)document.getElementById('iRdv').value=S.rdv[ti];
+    render();saveShared();closeModal();showToast('✅ Mis à jour !');
+  });
 }
 
 document.getElementById('modalBg').onclick=function(e){if(e.target===document.getElementById('modalBg'))closeModal();};
