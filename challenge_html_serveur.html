@@ -305,6 +305,8 @@ var MONTH=3,YEAR=2026,MIN_BOOST=16,MAX_JOKERS=2;
 var DAYS=['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
 // Samedis travaillés : index 3 (Sam 4), 10 (Sam 11), 17 (Sam 18), 24 (Sam 25)
 var WORKED=[1,1,1,1,0,0,1,1,1,1,1,0,1,1,1,1,1,1,0,1,1,1,1,1,1,0,1,1,1,1];
+// Jours qui comptent pour le booster : samedis exclus (index 3,10,17,24 = samedis)
+var BOOSTER_DAY=[1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1];
 
 // ===== BONS INDIVIDUELS =====
 var IND_PRIZES=[
@@ -480,7 +482,7 @@ function renderToday(){
   document.getElementById('barObjTxt').textContent=a.o>0?a.cumul+' / '+a.o+' ('+pO+'%)':'Cliquer sur le jour →';
   document.getElementById('lblObj').textContent=a.o>0?pO+'%':'—';
   var bg=document.getElementById('barBoostGroup');
-  if(!WORKED[ti]){bg.style.display='none';}
+  if(!BOOSTER_DAY[ti]){bg.style.display='none';}
   else{
     bg.style.display='block';
     var pB=Math.min(Math.round(a.s/MIN_BOOST*100),100),bB=document.getElementById('barBoost');
@@ -496,7 +498,7 @@ function renderToday(){
 function renderBooster(){
   var ti=todayIdx(),jokersUsed=0,fails=0,daysOk=0,status=[];
   for(var i=0;i<30;i++){
-    if(!WORKED[i]){status.push('nowork');continue;}
+    if(!BOOSTER_DAY[i]){status.push('nowork');continue;}
     if(i>ti){status.push('future');continue;}
     if((S.obj[i]||0)===0){status.push('future');continue;}
     if(S.sal[i]===null){status.push(i===ti?'today':'future');continue;}
@@ -526,7 +528,7 @@ function renderTotals(){
   var ti=todayIdx(),totC=0,totO=0,ok=0,fail=0;
   for(var i=0;i<=ti;i++){
     var s=S.sal[i],o=S.obj[i]||0;
-    if(s!==null){totC+=s;if(o>0)totO+=o;if(o>0&&WORKED[i]){if(assess(i).boostOk)ok++;else fail++;}}
+    if(s!==null){totC+=s;if(o>0)totO+=o;if(o>0&&BOOSTER_DAY[i]){if(assess(i).boostOk)ok++;else fail++;}}
   }
   var diff=totC-totO,ds=diff>0?'+'+diff:diff<0?''+diff:'=';
   var nc=diff>=0?'#55efc4':'#ff7675',dc=diff>0?'#55efc4':diff<0?'#ff7675':'#fdcb6e';
@@ -547,10 +549,16 @@ function renderCalendar(){
     else if(isFut){cls+=worked?'dc-future':'dc-offday';}
     else if(!worked){cls+='dc-offday';if(s!==null){if(a.r>0)repHtml='<div class="drep">☀️+'+a.r+'</div>';res='<div class="dres">'+a.cumul+'/'+a.o+'</div>';}}
     else if(s!==null){
-      cls+=a.boostOk&&a.objOk?'dc-ok':a.boostOk||a.objOk?'dc-min':'dc-fail';
+      if(BOOSTER_DAY[i]){
+        cls+=a.boostOk&&a.objOk?'dc-ok':a.boostOk||a.objOk?'dc-min':'dc-fail';
+        badge=a.boostOk?'⚡':S.jokers[i]?'🃏':'';
+      }else{
+        // Samedi travaillé : couleur sur objectif seul, pas de notion booster/fail
+        cls+=a.objOk?'dc-ok':'dc-min';
+        badge='';
+      }
       if(a.r>0)repHtml='<div class="drep">☀️+'+a.r+'</div>';
       res='<div class="dres">'+a.cumul+'/'+a.o+'</div>';
-      badge=a.boostOk?'⚡':S.jokers[i]?'🃏':'';
     }else{cls+='dc-future';}
     var offLabel=!worked?(i===5?'🐣':'W/E'):'';
     var cell=document.createElement('div');cell.className=cls;
@@ -693,8 +701,8 @@ function saveVentes(){
       S.milestones.m2done=true;var ts2=Date.now()+1;var p2=pickNextPrize(S.milestones);
       pushEvent('ticket',{prize:p2,ts:ts2});setTimeout(function(){spawnGoldenTicketForAll(p2,ts2,'jalon');},400);
     }
-    if(!prevBoostHalf&&sal>=8){pushEvent('floating',{icon:'⚡',label:'50% Booster !',size:'medium'});showFloatingIcon('⚡','50% Booster !','medium');}
-    if(a.boostOk&&!prevBoost){
+    if(BOOSTER_DAY[ti]&&!prevBoostHalf&&sal>=8){pushEvent('floating',{icon:'⚡',label:'50% Booster !',size:'medium'});showFloatingIcon('⚡','50% Booster !','medium');}
+    if(BOOSTER_DAY[ti]&&a.boostOk&&!prevBoost){
       if(!S.milestones.boostDone){
         S.milestones.boostDone=true;var ts3=Date.now()+2;var p3=pickNextPrize(S.milestones);
         pushEvent('ticket',{prize:p3,ts:ts3});setTimeout(function(){spawnBonusTicket(p3,ts3,'boost');},600);
@@ -704,14 +712,14 @@ function saveVentes(){
     }
     if(obj>0&&!prevObjHalf&&newCumul>=Math.round(obj*0.5)){pushEvent('floating',{icon:'🎯',label:'50% Objectif !',size:'medium'});showFloatingIcon('🎯','50% Objectif !','medium');}
     if(a.objOk&&!prevObj){pushEvent('floating',{icon:'🎯',label:'OBJECTIF ATTEINT !',size:'big'});pushEvent('celebration',{kind:'obj'});showFloatingIcon('🎯','OBJECTIF ATTEINT !','big');showCelebration('obj');}
-    if(!S.milestones.earlyBirdDone&&sal>=7&&(new Date().getHours()<14)){
+    if(BOOSTER_DAY[ti]&&!S.milestones.earlyBirdDone&&sal>=7&&(new Date().getHours()<14)){
       S.milestones.earlyBirdDone=true;var tseb=Date.now()+3;var pb=pickNextPrize(S.milestones);
       pushEvent('floating',{icon:'🌅',label:'EARLY BIRD !',size:'big'});
       pushEvent('earlybird',{prize:pb,ts:tseb});
       spawnEarlyBirdAnim();
       setTimeout(function(){spawnGoldenTicketForAll(pb,tseb,'earlybird');},1500);addTrophy('🌅','Early Bird !',todayStr);
     }
-    if(a.boostOk&&sal>=20){
+    if(BOOSTER_DAY[ti]&&a.boostOk&&sal>=20){
       var newTr=Math.floor((sal-20)/5)+1,prevTr=prev>=20?Math.floor((prev-20)/5)+1:0;
       if(newTr>prevTr){for(var t=prevTr+1;t<=newTr;t++){(function(tr){var tst=Date.now()+tr*10;var pt=pickNextPrize(S.milestones);
         pushEvent('floating',{icon:'🚀',label:'TURBO x'+tr+' !',size:'big'});
