@@ -366,6 +366,31 @@ var S={
 };
 var wonTickets=[],shownTrophies=[],lastSeenEventTs=0,collectedTicketTs=[];
 
+// ===== QUEUE DE SAVE : agrège les mutations et envoie un seul PUT =====
+var pendingSave=false, saveInFlight=false;
+function scheduleSave(){
+  pendingSave=true;
+  if(saveInFlight) return;
+  flushSave();
+}
+function flushSave(){
+  if(!pendingSave) return;
+  pendingSave=false;
+  saveInFlight=true;
+  sync('⏳ Sync…','#a29bfe');
+  fetch(BIN_URL,{method:'PUT',headers:HEADERS,body:JSON.stringify(S)})
+  .then(function(){
+    saveInFlight=false;
+    sync('✅ Synchronisé · '+now());
+    if(pendingSave) flushSave();
+  })
+  .catch(function(){
+    saveInFlight=false;
+    sync('⚠️ Erreur sync — réessai…','#fdcb6e');
+    setTimeout(function(){if(pendingSave) flushSave();else{pendingSave=true;flushSave();}},2000);
+  });
+}
+
 function todayIdx(){
   var t=new Date();
   if(t.getFullYear()===YEAR&&t.getMonth()===MONTH) return t.getDate()-1;
@@ -382,6 +407,7 @@ function assess(i){
   return{cumul:cumul,objOk:o>0&&cumul>=o,boostOk:s>=MIN_BOOST,o:o,r:r,s:s};
 }
 
+// ===== MERGE anti-régression : appliqué UNIQUEMENT lors d'un load depuis serveur =====
 function loadShared(){
   return fetch(BIN_URL,{headers:{'X-Master-Key':API_KEY}})
   .then(function(r){return r.json();})
@@ -389,6 +415,8 @@ function loadShared(){
     var p=j.record||j;
     if(Array.isArray(p.obj)&&p.obj.length===30) S.obj=p.obj;
     if(Array.isArray(p.rep)&&p.rep.length===30) S.rep=p.rep;
+    // Anti-régression : si le serveur a une valeur plus grande que la locale, on prend le max
+    // sauf si la locale est null (jamais saisie) auquel cas on prend le serveur tel quel
     if(Array.isArray(p.sal)&&p.sal.length===30){
       for(var i=0;i<30;i++){
         if(p.sal[i]!==null&&S.sal[i]!==null&&p.sal[i]<S.sal[i]) p.sal[i]=S.sal[i];
@@ -426,22 +454,6 @@ function loadShared(){
   .catch(function(e){sync('⚠️ Erreur : '+e.message,'#fdcb6e');});
 }
 
-function saveShared(){
-  if(S.events&&S.events.length>100) S.events=S.events.slice(-100);
-  return fetch(BIN_URL,{method:'PUT',headers:HEADERS,body:JSON.stringify(S)})
-  .then(function(){sync('✅ Synchronisé · '+now());})
-  .catch(function(){sync('⚠️ Erreur sync','#fdcb6e');});
-}
-
-// ===== SAVE OPTIMISTE : UI réactive, sync en arrière-plan =====
-function saveOptimistic(mutator){
-  sync('⏳ Sync en arrière-plan…','#a29bfe');
-  loadShared().then(function(){
-    mutator(S);
-    return saveShared();
-  });
-}
-
 function pushEvent(type,data){if(!S.events) S.events=[];S.events.push({type:type,data:data||{},ts:Date.now()});}
 
 function playEvent(ev){
@@ -457,7 +469,6 @@ function manualRefresh(){
   loadShared().then(function(){render();sync('✅ Mis à jour · '+now());});
 }
 
-// ===== REFRESH AUTO silencieux =====
 function autoRefresh(){
   loadShared().then(function(){render();});
 }
@@ -488,8 +499,11 @@ function renderToday(){
     document.getElementById('barBoostTxt').textContent=a.s+' / 16';
     document.getElementById('lblBoost').textContent=a.s+'/16';
   }
-  if(S.sal[ti]!==null) document.getElementById('iSal').value=S.sal[ti];
-  if(S.rdv[ti]!==null) document.getElementById('iRdv').value=S.rdv[ti];
+  // IMPORTANT : ne pas écraser l'input si l'utilisateur est en train de saisir
+  var iSalEl=document.getElementById('iSal');
+  if(S.sal[ti]!==null&&document.activeElement!==iSalEl) iSalEl.value=S.sal[ti];
+  var iRdvEl=document.getElementById('iRdv');
+  if(S.rdv[ti]!==null&&document.activeElement!==iRdvEl) iRdvEl.value=S.rdv[ti];
 }
 
 function renderBooster(){
@@ -571,13 +585,12 @@ function renderCalendar(){
 function adjSal(v){var el=document.getElementById('iSal');el.value=Math.max(0,(parseInt(el.value)||0)+v);}
 function adjRdv(v){var el=document.getElementById('iRdv');el.value=Math.max(0,(parseInt(el.value)||0)+v);}
 
-// ===== SAVE OPTIMISTE RDV =====
+// ===== SAVE RDV : immédiat, sans re-fetch =====
 function saveRdv(){
   var ti=todayIdx();
   var rdv=parseInt(document.getElementById('iRdv').value);
   if(isNaN(rdv)||rdv<0){showToast('❌ Valeur invalide');return;}
   var prev=S.rdv[ti]||0;
-  if(rdv<prev){showToast('⚠️ Valeur inférieure au cumul RDV actuel ('+prev+'). Annulé.');document.getElementById('iRdv').value=prev;return;}
   var added=rdv-prev;
   S.rdv[ti]=rdv;
   render();
@@ -592,10 +605,7 @@ function saveRdv(){
     }
   }
   showToast('✅ RDV mis à jour !');
-  saveOptimistic(function(state){
-    var serverRdv=state.rdv[ti]||0;
-    state.rdv[ti]=Math.max(rdv,serverRdv);
-  });
+  scheduleSave();
 }
 
 function spawnFlyingPhone(){
@@ -647,18 +657,12 @@ function spawnMiniTicket(prize){
   setTimeout(function(){if(el.parentNode){el.remove();showToast('💨 Bonus RDV envolé !');}},duration);
 }
 
-// ===== SAVE OPTIMISTE VENTES =====
+// ===== SAVE VENTES : immédiat, sans re-fetch =====
 function saveVentes(){
   var ti=todayIdx();
   if(!WORKED[ti]){showToast('⛔ Pas de challenge aujourd\'hui !');return;}
   var sal=parseInt(document.getElementById('iSal').value);
   if(isNaN(sal)||sal<0){showToast('❌ Indiquer les ventes');return;}
-  var currentSal=S.sal[ti]!==null?S.sal[ti]:0;
-  if(sal<currentSal){
-    showToast('⚠️ Valeur inférieure au cumul actuel ('+currentSal+'). Annulé.');
-    document.getElementById('iSal').value=currentSal;
-    return;
-  }
   var prev=S.sal[ti]||0,added=sal-prev,rep=S.rep[ti]||0,obj=S.obj[ti]||0;
   var prevCumul=prev+rep,newCumul=sal+rep;
   var prevBoostHalf=prev>=8,prevObjHalf=obj>0&&prevCumul>=Math.round(obj*0.5);
@@ -685,63 +689,44 @@ function saveVentes(){
   render();
   if(added>0){for(var n=0;n<added;n++){(function(d){setTimeout(function(){spawnPlusOne(1);},d);})(n*150);}}
   var a=assess(ti);
-  if(obj>0&&!S.milestones.m1done&&prevCumul<S.milestones.m1&&newCumul>=S.milestones.m1){
-    S.milestones.m1done=true;var ts1=Date.now();var p1=pickNextPrize(S.milestones);
-    pushEvent('ticket',{prize:p1,ts:ts1});setTimeout(function(){spawnGoldenTicketForAll(p1,ts1,'jalon');},400);
-  }
-  if(obj>0&&!S.milestones.m2done&&prevCumul<S.milestones.m2&&newCumul>=S.milestones.m2){
-    S.milestones.m2done=true;var ts2=Date.now()+1;var p2=pickNextPrize(S.milestones);
-    pushEvent('ticket',{prize:p2,ts:ts2});setTimeout(function(){spawnGoldenTicketForAll(p2,ts2,'jalon');},400);
-  }
-  if(BOOSTER_DAY[ti]&&!prevBoostHalf&&sal>=8){pushEvent('floating',{icon:'⚡',label:'50% Booster !',size:'medium'});showFloatingIcon('⚡','50% Booster !','medium');}
-  if(BOOSTER_DAY[ti]&&a.boostOk&&!prevBoost){
-    if(!S.milestones.boostDone){
-      S.milestones.boostDone=true;var ts3=Date.now()+2;var p3=pickNextPrize(S.milestones);
-      pushEvent('ticket',{prize:p3,ts:ts3});setTimeout(function(){spawnBonusTicket(p3,ts3,'boost');},600);
+  // Les milestones ne se déclenchent que si on MONTE au-dessus (added > 0)
+  if(added>0){
+    if(obj>0&&!S.milestones.m1done&&prevCumul<S.milestones.m1&&newCumul>=S.milestones.m1){
+      S.milestones.m1done=true;var ts1=Date.now();var p1=pickNextPrize(S.milestones);
+      pushEvent('ticket',{prize:p1,ts:ts1});setTimeout(function(){spawnGoldenTicketForAll(p1,ts1,'jalon');},400);
     }
-    pushEvent('floating',{icon:'⚡',label:'BOOSTER DÉCLENCHÉ !',size:'big'});pushEvent('celebration',{kind:'boost'});
-    showFloatingIcon('⚡','BOOSTER DÉCLENCHÉ !','big');showCelebration('boost');
-  }
-  if(obj>0&&!prevObjHalf&&newCumul>=Math.round(obj*0.5)){pushEvent('floating',{icon:'🎯',label:'50% Objectif !',size:'medium'});showFloatingIcon('🎯','50% Objectif !','medium');}
-  if(a.objOk&&!prevObj){pushEvent('floating',{icon:'🎯',label:'OBJECTIF ATTEINT !',size:'big'});pushEvent('celebration',{kind:'obj'});showFloatingIcon('🎯','OBJECTIF ATTEINT !','big');showCelebration('obj');}
-  if(BOOSTER_DAY[ti]&&!S.milestones.earlyBirdDone&&sal>=7&&(new Date().getHours()<14)){
-    S.milestones.earlyBirdDone=true;var tseb=Date.now()+3;var pb=pickNextPrize(S.milestones);
-    pushEvent('floating',{icon:'🌅',label:'EARLY BIRD !',size:'big'});
-    pushEvent('earlybird',{prize:pb,ts:tseb});
-    spawnEarlyBirdAnim();
-    setTimeout(function(){spawnGoldenTicketForAll(pb,tseb,'earlybird');},1500);addTrophy('🌅','Early Bird !',todayStr);
-  }
-  if(BOOSTER_DAY[ti]&&a.boostOk&&sal>=20){
-    var newTr=Math.floor((sal-20)/5)+1,prevTr=prev>=20?Math.floor((prev-20)/5)+1:0;
-    if(newTr>prevTr){for(var t=prevTr+1;t<=newTr;t++){(function(tr){var tst=Date.now()+tr*10;var pt=pickNextPrize(S.milestones);
-      pushEvent('floating',{icon:'🚀',label:'TURBO x'+tr+' !',size:'big'});
-      pushEvent('turbo',{prize:pt,tranche:tr,ts:tst});
-      setTimeout(function(){spawnBonusTicket(pt,tst,'turbo');addTrophy('🚀','Turbo x'+tr,todayStr);},tr*400);})(t);}}
+    if(obj>0&&!S.milestones.m2done&&prevCumul<S.milestones.m2&&newCumul>=S.milestones.m2){
+      S.milestones.m2done=true;var ts2=Date.now()+1;var p2=pickNextPrize(S.milestones);
+      pushEvent('ticket',{prize:p2,ts:ts2});setTimeout(function(){spawnGoldenTicketForAll(p2,ts2,'jalon');},400);
+    }
+    if(BOOSTER_DAY[ti]&&!prevBoostHalf&&sal>=8){pushEvent('floating',{icon:'⚡',label:'50% Booster !',size:'medium'});showFloatingIcon('⚡','50% Booster !','medium');}
+    if(BOOSTER_DAY[ti]&&a.boostOk&&!prevBoost){
+      if(!S.milestones.boostDone){
+        S.milestones.boostDone=true;var ts3=Date.now()+2;var p3=pickNextPrize(S.milestones);
+        pushEvent('ticket',{prize:p3,ts:ts3});setTimeout(function(){spawnBonusTicket(p3,ts3,'boost');},600);
+      }
+      pushEvent('floating',{icon:'⚡',label:'BOOSTER DÉCLENCHÉ !',size:'big'});pushEvent('celebration',{kind:'boost'});
+      showFloatingIcon('⚡','BOOSTER DÉCLENCHÉ !','big');showCelebration('boost');
+    }
+    if(obj>0&&!prevObjHalf&&newCumul>=Math.round(obj*0.5)){pushEvent('floating',{icon:'🎯',label:'50% Objectif !',size:'medium'});showFloatingIcon('🎯','50% Objectif !','medium');}
+    if(a.objOk&&!prevObj){pushEvent('floating',{icon:'🎯',label:'OBJECTIF ATTEINT !',size:'big'});pushEvent('celebration',{kind:'obj'});showFloatingIcon('🎯','OBJECTIF ATTEINT !','big');showCelebration('obj');}
+    if(BOOSTER_DAY[ti]&&!S.milestones.earlyBirdDone&&sal>=7&&(new Date().getHours()<14)){
+      S.milestones.earlyBirdDone=true;var tseb=Date.now()+3;var pb=pickNextPrize(S.milestones);
+      pushEvent('floating',{icon:'🌅',label:'EARLY BIRD !',size:'big'});
+      pushEvent('earlybird',{prize:pb,ts:tseb});
+      spawnEarlyBirdAnim();
+      setTimeout(function(){spawnGoldenTicketForAll(pb,tseb,'earlybird');},1500);addTrophy('🌅','Early Bird !',todayStr);
+    }
+    if(BOOSTER_DAY[ti]&&a.boostOk&&sal>=20){
+      var newTr=Math.floor((sal-20)/5)+1,prevTr=prev>=20?Math.floor((prev-20)/5)+1:0;
+      if(newTr>prevTr){for(var t=prevTr+1;t<=newTr;t++){(function(tr){var tst=Date.now()+tr*10;var pt=pickNextPrize(S.milestones);
+        pushEvent('floating',{icon:'🚀',label:'TURBO x'+tr+' !',size:'big'});
+        pushEvent('turbo',{prize:pt,tranche:tr,ts:tst});
+        setTimeout(function(){spawnBonusTicket(pt,tst,'turbo');addTrophy('🚀','Turbo x'+tr,todayStr);},tr*400);})(t);}}
+    }
   }
   showToast('✅ Ventes mises à jour !');
-
-  var snapshotSal=sal;
-  var snapshotMilestones=JSON.parse(JSON.stringify(S.milestones));
-  var snapshotEvents=S.events.slice();
-  var snapshotTrophies=S.trophies?S.trophies.slice():[];
-  saveOptimistic(function(state){
-    var serverSal=state.sal[ti]!==null?state.sal[ti]:0;
-    state.sal[ti]=Math.max(snapshotSal,serverSal);
-    state.milestones=snapshotMilestones;
-    var existingTs={};
-    state.events=state.events||[];
-    for(var i=0;i<state.events.length;i++)existingTs[state.events[i].ts]=true;
-    for(var i=0;i<snapshotEvents.length;i++){
-      if(!existingTs[snapshotEvents[i].ts]) state.events.push(snapshotEvents[i]);
-    }
-    var existingTr={};
-    state.trophies=state.trophies||[];
-    for(var i=0;i<state.trophies.length;i++)existingTr[state.trophies[i].icon+state.trophies[i].label+state.trophies[i].day]=true;
-    for(var i=0;i<snapshotTrophies.length;i++){
-      var k=snapshotTrophies[i].icon+snapshotTrophies[i].label+snapshotTrophies[i].day;
-      if(!existingTr[k]) state.trophies.push(snapshotTrophies[i]);
-    }
-  });
+  scheduleSave();
 }
 
 function spawnPlusOne(n){
@@ -841,21 +826,14 @@ function showTicketWon(prize){
   launchConfetti();
 }
 
-// ===== SAVE OPTIMISTE CLAIM =====
+// ===== SAVE CLAIM : immédiat =====
 function saveClaim(prize){
   if(prize.ts)collectedTicketTs.push(prize.ts);
   if(!S.wonTickets)S.wonTickets=[];
   S.wonTickets.push(prize);
   wonTickets=S.wonTickets.filter(function(t){return t.day===prize.day;});
   updateTicketsBar();
-  saveOptimistic(function(state){
-    state.wonTickets=state.wonTickets||[];
-    var exists=false;
-    for(var i=0;i<state.wonTickets.length;i++){
-      if(state.wonTickets[i].ts===prize.ts&&state.wonTickets[i].label===prize.label){exists=true;break;}
-    }
-    if(!exists) state.wonTickets.push(prize);
-  });
+  scheduleSave();
 }
 
 function updateTicketsBar(){
@@ -1062,7 +1040,6 @@ function openModal(i){
   document.getElementById('modalBg').classList.add('open');
 }
 
-// ===== SAVE OPTIMISTE : ajout de bon via modale =====
 function addModalTicket(prize,todayStr,dayIdx2,isRdv){
   var tri='ÉQUIPE';
   if(isRdv||!prize.collectif){
@@ -1075,14 +1052,7 @@ function addModalTicket(prize,todayStr,dayIdx2,isRdv){
   if(!S.wonTickets)S.wonTickets=[];S.wonTickets.push(t);
   var ti=todayIdx();if(dayIdx2===ti){wonTickets.push(t);updateTicketsBar();}
   showToast('✅ Bon ajouté !');
-  saveOptimistic(function(state){
-    state.wonTickets=state.wonTickets||[];
-    var exists=false;
-    for(var i=0;i<state.wonTickets.length;i++){
-      if(state.wonTickets[i].ts===t.ts&&state.wonTickets[i].label===t.label){exists=true;break;}
-    }
-    if(!exists) state.wonTickets.push(t);
-  });
+  scheduleSave();
   openModal(dayIdx2);
 }
 
@@ -1093,17 +1063,12 @@ function removeModalTicket(todayStr,idx){
   var ti=todayIdx(),ts=YEAR+'-'+(MONTH+1)+'-'+ti;
   wonTickets=S.wonTickets.filter(function(t){return t.day===ts;});
   updateTicketsBar();openModal(editIdx);showToast('🗑️ Bon supprimé !');
-  saveOptimistic(function(state){
-    if(!state.wonTickets) return;
-    state.wonTickets=state.wonTickets.filter(function(t){
-      return !(t.ts===toRemove.ts&&t.label===toRemove.label&&t.day===toRemove.day);
-    });
-  });
+  scheduleSave();
 }
 
 function closeModal(){document.getElementById('modalBg').classList.remove('open');editIdx=-1;}
 
-// ===== SAVE OPTIMISTE MODALE =====
+// ===== SAVE MODALE : immédiat, sans re-fetch =====
 function saveModal(){
   if(editIdx<0)return;
   var o=parseInt(document.getElementById('mObj').value),r=parseInt(document.getElementById('mRep').value);
@@ -1111,10 +1076,6 @@ function saveModal(){
   var idx=editIdx;
   var ti=todayIdx();
   var newSal=s!==''&&!isNaN(parseInt(s))?parseInt(s):null;
-  if(idx===ti&&newSal!==null&&S.sal[idx]!==null&&newSal<S.sal[idx]){
-    showToast('⚠️ Valeur ventes inférieure au cumul actuel ('+S.sal[idx]+'). Annulé.');
-    closeModal();return;
-  }
   var newObj=!isNaN(o)&&o>=0?o:0;
   var newRep=!isNaN(r)&&r>=0?r:0;
   var newRdv=rdv!==''&&!isNaN(parseInt(rdv))?parseInt(rdv):null;
@@ -1123,23 +1084,7 @@ function saveModal(){
   if(idx===ti&&S.sal[ti]!==null)document.getElementById('iSal').value=S.sal[ti];
   if(idx===ti&&S.rdv[ti]!==null)document.getElementById('iRdv').value=S.rdv[ti];
   render();closeModal();showToast('✅ Mis à jour !');
-  saveOptimistic(function(state){
-    state.obj[idx]=newObj;
-    state.rep[idx]=newRep;
-    if(newSal!==null){
-      var serverSal=state.sal[idx]!==null?state.sal[idx]:0;
-      state.sal[idx]=Math.max(newSal,serverSal);
-    }else{
-      state.sal[idx]=null;
-    }
-    if(newRdv!==null){
-      var serverRdv=state.rdv[idx]!==null?state.rdv[idx]:0;
-      state.rdv[idx]=Math.max(newRdv,serverRdv);
-    }else{
-      state.rdv[idx]=null;
-    }
-    state.jokers[idx]=newJoker;
-  });
+  scheduleSave();
 }
 
 document.getElementById('modalBg').onclick=function(e){if(e.target===document.getElementById('modalBg'))closeModal();};
@@ -1151,7 +1096,6 @@ function init(){
     if(S.sal[ti]!==null)document.getElementById('iSal').value=S.sal[ti];
     if(S.rdv[ti]!==null)document.getElementById('iRdv').value=S.rdv[ti];
     sync('✅ Prêt · '+now());render();
-    // Refresh auto toutes les 15 minutes
     setInterval(autoRefresh, 15*60*1000);
   });
 }
