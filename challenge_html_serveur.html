@@ -120,30 +120,23 @@ h1{text-align:center;font-size:2rem;font-weight:900;margin-bottom:4px;background
 .fly-phone{position:fixed;pointer-events:none;z-index:500;font-size:2.4rem;filter:drop-shadow(0 0 10px #00cec9);animation:flyPhone 1.1s cubic-bezier(.22,.61,.36,1) forwards}
 @keyframes flyPhone{0%{opacity:1;transform:translateX(-50%) scale(1)}100%{opacity:0;transform:translateX(-50%) scale(1.4) translateY(-80vh)}}
 .ticket-won.rdv-ticket{background:linear-gradient(135deg,#00b894,#00cec9);color:#fff}
-/* ===== ANIMATIONS DIFFÉRENCIÉES PAR TYPE DE BON ===== */
 .ticket-anim{position:fixed;z-index:600;cursor:pointer;font-size:3.8rem;filter:drop-shadow(0 0 20px gold) drop-shadow(0 0 40px gold);user-select:none}
 .ticket-anim .tc-label{font-size:.7rem;font-weight:900;background:#f9ca24;color:#1a1a2e;border-radius:6px;padding:2px 6px;text-align:center;margin-top:2px;white-space:nowrap}
-/* Barre de temps commune */
 .tc-timer{position:absolute;left:0;right:0;bottom:-10px;height:4px;background:rgba(255,255,255,.2);border-radius:2px;overflow:hidden}
 .tc-timer-fill{height:100%;background:linear-gradient(90deg,#00b894,#f9ca24,#d63031);width:100%;transform-origin:left;animation:timerShrink linear forwards}
 .tc-timer-fill.critical{animation:timerShrink linear forwards,timerBlink .3s ease-in-out infinite}
 @keyframes timerShrink{from{transform:scaleX(1)}to{transform:scaleX(0)}}
 @keyframes timerBlink{0%,100%{background:#d63031;box-shadow:0 0 8px #d63031}50%{background:#ff7675;box-shadow:0 0 16px #ff7675}}
-/* 1. Jalon — glissade diagonale */
 @keyframes slideDiag{0%{transform:translate(-20vw,-10vh) scale(.5);opacity:0}10%{transform:translate(0,0) scale(1);opacity:1}90%{transform:translate(60vw,40vh) scale(1);opacity:1}100%{transform:translate(80vw,55vh) scale(.5);opacity:0}}
 .anim-jalon{animation:slideDiag 12s linear forwards}
-/* 2. Booster — cercle orbital central */
 @keyframes orbitCircle{0%{transform:translate(-50%,-50%) rotate(0deg) translateX(120px) rotate(0deg) scale(0)}8%{transform:translate(-50%,-50%) rotate(0deg) translateX(120px) rotate(0deg) scale(1.1)}100%{transform:translate(-50%,-50%) rotate(720deg) translateX(120px) rotate(-720deg) scale(1)}}
 .anim-boost{left:50%;top:50%;animation:orbitCircle 15s cubic-bezier(.4,0,.6,1) forwards;filter:drop-shadow(0 0 25px gold) drop-shadow(0 0 50px #f9ca24)}
-/* 3. Early Bird — flotte doucement */
 @keyframes floatSoft{0%{transform:translateY(0) scale(.6);opacity:0}10%{transform:translateY(-5px) scale(1);opacity:1}50%{transform:translateY(-30px) translateX(20px) scale(1)}90%{transform:translateY(-10px) translateX(-15px) scale(1);opacity:1}100%{transform:translateY(20px) translateX(0) scale(.6);opacity:0}}
 .anim-earlybird{animation:floatSoft 10s ease-in-out forwards;filter:drop-shadow(0 0 15px #f9ca24) drop-shadow(0 0 30px #f0932b)}
-/* 4. Turbo — rebond pinball rapide */
 @keyframes pinballBounce{0%{transform:translate(0,0) scale(0)}5%{transform:translate(30vw,-20vh) scale(1)}18%{transform:translate(-25vw,-15vh) scale(1)}32%{transform:translate(35vw,25vh) scale(1)}48%{transform:translate(-30vw,10vh) scale(1)}64%{transform:translate(20vw,-25vh) scale(1)}80%{transform:translate(-20vw,20vh) scale(1)}95%{transform:translate(25vw,0) scale(1);opacity:1}100%{transform:translate(0,0) scale(.5);opacity:0}}
 .anim-turbo{left:50%;top:50%;animation:pinballBounce 8s cubic-bezier(.5,.05,.5,.95) forwards;filter:drop-shadow(0 0 20px #a29bfe) drop-shadow(0 0 40px #6c5ce7)}
 .anim-turbo::after{content:'';position:absolute;inset:-20px;border-radius:50%;background:radial-gradient(circle,rgba(162,155,254,.5),transparent 70%);z-index:-1;animation:turboTrail 8s linear forwards}
 @keyframes turboTrail{0%,100%{opacity:0}10%,90%{opacity:.8}}
-/* 5. RDV — ping-pong vertical */
 @keyframes pingPongV{0%{transform:translateY(0) scale(0)}8%{transform:translateY(-30vh) scale(1)}20%{transform:translateY(10vh) scale(1)}35%{transform:translateY(-25vh) scale(1)}50%{transform:translateY(15vh) scale(1)}65%{transform:translateY(-20vh) scale(1)}80%{transform:translateY(5vh) scale(1);opacity:1}100%{transform:translateY(-10vh) scale(.5);opacity:0}}
 .anim-rdv{animation:pingPongV 10s cubic-bezier(.34,1.56,.64,1) forwards;filter:drop-shadow(0 0 15px #00cec9) drop-shadow(0 0 30px #00b894)}
 @media (max-width:600px){
@@ -295,7 +288,6 @@ h1{text-align:center;font-size:2rem;font-weight:900;margin-bottom:4px;background
 <div class="cc" id="cc"></div>
 
 <script>
-// ===== CONFIG JSONBin =====
 var BIN_ID  = '69d7f09336566621a8969ca7';
 var API_KEY = '$2a$10$j.EvQYa3TiVfgAxZJWVcPeMvrKUWQ83egNT9ugRIUkk.HacoWpioe';
 var BIN_URL = 'https://api.jsonbin.io/v3/b/'+BIN_ID;
@@ -303,12 +295,9 @@ var HEADERS = {'Content-Type':'application/json','X-Master-Key':API_KEY,'X-Bin-V
 
 var MONTH=3,YEAR=2026,MIN_BOOST=16,MAX_JOKERS=2;
 var DAYS=['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
-// Samedis travaillés : index 3 (Sam 4), 10 (Sam 11), 17 (Sam 18), 24 (Sam 25)
 var WORKED=[1,1,1,1,0,0,1,1,1,1,1,0,1,1,1,1,1,1,0,1,1,1,1,1,1,0,1,1,1,1];
-// Jours qui comptent pour le booster : samedis exclus (index 3,10,17,24 = samedis)
 var BOOSTER_DAY=[1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1];
 
-// ===== BONS INDIVIDUELS =====
 var IND_PRIZES=[
   {icon:'🧖',label:'Masque visage ou soin mains',collectif:false},
   {icon:'📓',label:'Carnet coloriage adulte + feutres',collectif:false},
@@ -325,7 +314,6 @@ var IND_PRIZES=[
   {icon:'🎟️',label:'Place de cinéma',collectif:false}
 ];
 
-// ===== BONS COLLECTIFS =====
 var COL_PRIZES=[
   {icon:'🧋',label:'Bubble tea pour toute l\'équipe !',collectif:true},
   {icon:'🥐',label:'Petit-déj\' croissants frais !',collectif:true},
@@ -333,7 +321,6 @@ var COL_PRIZES=[
   {icon:'🧺',label:'Déj pique-nique des beaux jours !',collectif:true}
 ];
 
-// ===== BONS RDV =====
 var RDV_PRIZES=[
   {icon:'🍬',label:'Paquet de bonbons !'},
   {icon:'🕯️',label:'Bougie parfumée !'},
@@ -341,10 +328,8 @@ var RDV_PRIZES=[
   {icon:'📚',label:'Livre de poche au choix !'}
 ];
 
-// Tous bons ventes pour la modale manager
 var ALL_PRIZES=IND_PRIZES.concat(COL_PRIZES);
 
-// ===== LOGIQUE SÉQUENCE : jamais plus de 2 individuels consécutifs, jamais 2 collectifs consécutifs =====
 function pickNextPrize(milestones){
   if(!milestones.prizeSeq) milestones.prizeSeq=[];
   if(milestones.lastIndIdx===undefined) milestones.lastIndIdx=-1;
@@ -404,14 +389,12 @@ function loadShared(){
     var p=j.record||j;
     if(Array.isArray(p.obj)&&p.obj.length===30) S.obj=p.obj;
     if(Array.isArray(p.rep)&&p.rep.length===30) S.rep=p.rep;
-    // Protection anti-régression sur sal
     if(Array.isArray(p.sal)&&p.sal.length===30){
       for(var i=0;i<30;i++){
         if(p.sal[i]!==null&&S.sal[i]!==null&&p.sal[i]<S.sal[i]) p.sal[i]=S.sal[i];
       }
       S.sal=p.sal;
     }
-    // Protection anti-régression sur rdv
     if(Array.isArray(p.rdv)&&p.rdv.length===30){
       for(var i=0;i<30;i++){
         if(p.rdv[i]!==null&&S.rdv[i]!==null&&p.rdv[i]<S.rdv[i]) p.rdv[i]=S.rdv[i];
@@ -450,6 +433,15 @@ function saveShared(){
   .catch(function(){sync('⚠️ Erreur sync','#fdcb6e');});
 }
 
+// ===== SAVE OPTIMISTE : UI réactive, sync en arrière-plan =====
+function saveOptimistic(mutator){
+  sync('⏳ Sync en arrière-plan…','#a29bfe');
+  loadShared().then(function(){
+    mutator(S);
+    return saveShared();
+  });
+}
+
 function pushEvent(type,data){if(!S.events) S.events=[];S.events.push({type:type,data:data||{},ts:Date.now()});}
 
 function playEvent(ev){
@@ -463,6 +455,11 @@ function now(){return new Date().toLocaleTimeString('fr-FR');}
 function manualRefresh(){
   sync('⏳ Mise à jour…');
   loadShared().then(function(){render();sync('✅ Mis à jour · '+now());});
+}
+
+// ===== REFRESH AUTO silencieux =====
+function autoRefresh(){
+  loadShared().then(function(){render();});
 }
 
 function render(){renderToday();renderBooster();renderTotals();renderCalendar();}
@@ -553,7 +550,6 @@ function renderCalendar(){
         cls+=a.boostOk&&a.objOk?'dc-ok':a.boostOk||a.objOk?'dc-min':'dc-fail';
         badge=a.boostOk?'⚡':S.jokers[i]?'🃏':'';
       }else{
-        // Samedi travaillé : couleur sur objectif seul, pas de notion booster/fail
         cls+=a.objOk?'dc-ok':'dc-min';
         badge='';
       }
@@ -575,31 +571,30 @@ function renderCalendar(){
 function adjSal(v){var el=document.getElementById('iSal');el.value=Math.max(0,(parseInt(el.value)||0)+v);}
 function adjRdv(v){var el=document.getElementById('iRdv');el.value=Math.max(0,(parseInt(el.value)||0)+v);}
 
+// ===== SAVE OPTIMISTE RDV =====
 function saveRdv(){
   var ti=todayIdx();
   var rdv=parseInt(document.getElementById('iRdv').value);
   if(isNaN(rdv)||rdv<0){showToast('❌ Valeur invalide');return;}
-  sync('⏳ Mise à jour RDV…');
-  loadShared().then(function(){
-    var prev=S.rdv[ti]||0;
-    if(rdv<prev){showToast('⚠️ Valeur inférieure au cumul RDV actuel ('+prev+'). Annulé.');document.getElementById('iRdv').value=prev;return;}
-    var added=rdv-prev;
-    S.rdv[ti]=rdv;
-    if(added>0){
-      for(var n=0;n<added;n++){
-        (function(d){setTimeout(function(){spawnFlyingPhone();},d);})(n*180);
-      }
+  var prev=S.rdv[ti]||0;
+  if(rdv<prev){showToast('⚠️ Valeur inférieure au cumul RDV actuel ('+prev+'). Annulé.');document.getElementById('iRdv').value=prev;return;}
+  var added=rdv-prev;
+  S.rdv[ti]=rdv;
+  render();
+  if(added>0){for(var n=0;n<added;n++){(function(d){setTimeout(function(){spawnFlyingPhone();},d);})(n*180);}}
+  var newT=Math.floor(rdv/3),prevT=Math.floor(prev/3);
+  if(newT>prevT){
+    for(var t=prevT+1;t<=newT;t++){
+      (function(tr){
+        var prize=RDV_PRIZES[Math.floor(Math.random()*RDV_PRIZES.length)];
+        setTimeout(function(){spawnMiniTicket(prize);},tr*300);
+      })(t);
     }
-    var newT=Math.floor(rdv/3),prevT=Math.floor(prev/3);
-    if(newT>prevT){
-      for(var t=prevT+1;t<=newT;t++){
-        (function(tr){
-          var prize=RDV_PRIZES[Math.floor(Math.random()*RDV_PRIZES.length)];
-          setTimeout(function(){spawnMiniTicket(prize);},tr*300);
-        })(t);
-      }
-    }
-    render();saveShared();
+  }
+  showToast('✅ RDV mis à jour !');
+  saveOptimistic(function(state){
+    var serverRdv=state.rdv[ti]||0;
+    state.rdv[ti]=Math.max(rdv,serverRdv);
   });
 }
 
@@ -652,81 +647,100 @@ function spawnMiniTicket(prize){
   setTimeout(function(){if(el.parentNode){el.remove();showToast('💨 Bonus RDV envolé !');}},duration);
 }
 
+// ===== SAVE OPTIMISTE VENTES =====
 function saveVentes(){
   var ti=todayIdx();
   if(!WORKED[ti]){showToast('⛔ Pas de challenge aujourd\'hui !');return;}
   var sal=parseInt(document.getElementById('iSal').value);
   if(isNaN(sal)||sal<0){showToast('❌ Indiquer les ventes');return;}
-  sync('⏳ Mise à jour…');
-  loadShared().then(function(){
-    var currentSal=S.sal[ti]!==null?S.sal[ti]:0;
-    if(sal<currentSal){
-      showToast('⚠️ Valeur inférieure au cumul actuel ('+currentSal+'). Annulé.');
-      document.getElementById('iSal').value=currentSal;
-      return;
-    }
-    var prev=S.sal[ti]||0,added=sal-prev,rep=S.rep[ti]||0,obj=S.obj[ti]||0;
-    var prevCumul=prev+rep,newCumul=sal+rep;
-    var prevBoostHalf=prev>=8,prevObjHalf=obj>0&&prevCumul>=Math.round(obj*0.5);
-    var prevBoost=prev>=MIN_BOOST,prevObj=obj>0&&prevCumul>=obj;
-    var todayStr=YEAR+'-'+(MONTH+1)+'-'+ti;
-    S.sal[ti]=sal;
-    if(!S.events) S.events=[];
-    // Init milestones du jour — reset prizeSeq chaque nouveau jour
-    if(!S.milestones||S.milestones.day!==ti||!S.milestones.m1||!S.milestones.m2){
-      var mid=Math.max(1,Math.round(obj*0.5)),sc=rep;
-      var m1=Math.round(sc+1+Math.random()*Math.max(0,mid-sc-2));
-      var m2=Math.round(mid+1+Math.random()*Math.max(0,obj-mid-2));
-      if(m1<=sc)m1=sc+1;if(m1>=mid)m1=Math.max(sc+1,mid-1);
-      if(m2<=mid)m2=mid+1;if(m2>=obj)m2=obj-1;if(m2<=m1)m2=m1+1;
-      if(m1<=0||m1>=obj)m1=Math.max(1,Math.round(obj*0.3));
-      if(m2<=m1||m2>=obj)m2=Math.round(obj*0.7);
-      S.milestones={day:ti,m1:m1,m2:m2,m1done:m1<=prevCumul,m2done:m2<=prevCumul,
-        boostDone:prev>=MIN_BOOST,earlyBirdDone:false,
-        prizeSeq:[],lastIndIdx:-1,lastColIdx:-1};
-    }
-    // Migration douce si milestones existants sans les nouveaux champs
-    if(!S.milestones.prizeSeq) S.milestones.prizeSeq=[];
-    if(S.milestones.lastIndIdx===undefined) S.milestones.lastIndIdx=-1;
-    if(S.milestones.lastColIdx===undefined) S.milestones.lastColIdx=-1;
+  var currentSal=S.sal[ti]!==null?S.sal[ti]:0;
+  if(sal<currentSal){
+    showToast('⚠️ Valeur inférieure au cumul actuel ('+currentSal+'). Annulé.');
+    document.getElementById('iSal').value=currentSal;
+    return;
+  }
+  var prev=S.sal[ti]||0,added=sal-prev,rep=S.rep[ti]||0,obj=S.obj[ti]||0;
+  var prevCumul=prev+rep,newCumul=sal+rep;
+  var prevBoostHalf=prev>=8,prevObjHalf=obj>0&&prevCumul>=Math.round(obj*0.5);
+  var prevBoost=prev>=MIN_BOOST,prevObj=obj>0&&prevCumul>=obj;
+  var todayStr=YEAR+'-'+(MONTH+1)+'-'+ti;
+  S.sal[ti]=sal;
+  if(!S.events) S.events=[];
+  if(!S.milestones||S.milestones.day!==ti||!S.milestones.m1||!S.milestones.m2){
+    var mid=Math.max(1,Math.round(obj*0.5)),sc=rep;
+    var m1=Math.round(sc+1+Math.random()*Math.max(0,mid-sc-2));
+    var m2=Math.round(mid+1+Math.random()*Math.max(0,obj-mid-2));
+    if(m1<=sc)m1=sc+1;if(m1>=mid)m1=Math.max(sc+1,mid-1);
+    if(m2<=mid)m2=mid+1;if(m2>=obj)m2=obj-1;if(m2<=m1)m2=m1+1;
+    if(m1<=0||m1>=obj)m1=Math.max(1,Math.round(obj*0.3));
+    if(m2<=m1||m2>=obj)m2=Math.round(obj*0.7);
+    S.milestones={day:ti,m1:m1,m2:m2,m1done:m1<=prevCumul,m2done:m2<=prevCumul,
+      boostDone:prev>=MIN_BOOST,earlyBirdDone:false,
+      prizeSeq:[],lastIndIdx:-1,lastColIdx:-1};
+  }
+  if(!S.milestones.prizeSeq) S.milestones.prizeSeq=[];
+  if(S.milestones.lastIndIdx===undefined) S.milestones.lastIndIdx=-1;
+  if(S.milestones.lastColIdx===undefined) S.milestones.lastColIdx=-1;
 
-    render();
-    if(added>0){for(var n=0;n<added;n++){(function(d){setTimeout(function(){spawnPlusOne(1);},d);})(n*150);}}
-    var a=assess(ti);
-    if(obj>0&&!S.milestones.m1done&&prevCumul<S.milestones.m1&&newCumul>=S.milestones.m1){
-      S.milestones.m1done=true;var ts1=Date.now();var p1=pickNextPrize(S.milestones);
-      pushEvent('ticket',{prize:p1,ts:ts1});setTimeout(function(){spawnGoldenTicketForAll(p1,ts1,'jalon');},400);
+  render();
+  if(added>0){for(var n=0;n<added;n++){(function(d){setTimeout(function(){spawnPlusOne(1);},d);})(n*150);}}
+  var a=assess(ti);
+  if(obj>0&&!S.milestones.m1done&&prevCumul<S.milestones.m1&&newCumul>=S.milestones.m1){
+    S.milestones.m1done=true;var ts1=Date.now();var p1=pickNextPrize(S.milestones);
+    pushEvent('ticket',{prize:p1,ts:ts1});setTimeout(function(){spawnGoldenTicketForAll(p1,ts1,'jalon');},400);
+  }
+  if(obj>0&&!S.milestones.m2done&&prevCumul<S.milestones.m2&&newCumul>=S.milestones.m2){
+    S.milestones.m2done=true;var ts2=Date.now()+1;var p2=pickNextPrize(S.milestones);
+    pushEvent('ticket',{prize:p2,ts:ts2});setTimeout(function(){spawnGoldenTicketForAll(p2,ts2,'jalon');},400);
+  }
+  if(BOOSTER_DAY[ti]&&!prevBoostHalf&&sal>=8){pushEvent('floating',{icon:'⚡',label:'50% Booster !',size:'medium'});showFloatingIcon('⚡','50% Booster !','medium');}
+  if(BOOSTER_DAY[ti]&&a.boostOk&&!prevBoost){
+    if(!S.milestones.boostDone){
+      S.milestones.boostDone=true;var ts3=Date.now()+2;var p3=pickNextPrize(S.milestones);
+      pushEvent('ticket',{prize:p3,ts:ts3});setTimeout(function(){spawnBonusTicket(p3,ts3,'boost');},600);
     }
-    if(obj>0&&!S.milestones.m2done&&prevCumul<S.milestones.m2&&newCumul>=S.milestones.m2){
-      S.milestones.m2done=true;var ts2=Date.now()+1;var p2=pickNextPrize(S.milestones);
-      pushEvent('ticket',{prize:p2,ts:ts2});setTimeout(function(){spawnGoldenTicketForAll(p2,ts2,'jalon');},400);
+    pushEvent('floating',{icon:'⚡',label:'BOOSTER DÉCLENCHÉ !',size:'big'});pushEvent('celebration',{kind:'boost'});
+    showFloatingIcon('⚡','BOOSTER DÉCLENCHÉ !','big');showCelebration('boost');
+  }
+  if(obj>0&&!prevObjHalf&&newCumul>=Math.round(obj*0.5)){pushEvent('floating',{icon:'🎯',label:'50% Objectif !',size:'medium'});showFloatingIcon('🎯','50% Objectif !','medium');}
+  if(a.objOk&&!prevObj){pushEvent('floating',{icon:'🎯',label:'OBJECTIF ATTEINT !',size:'big'});pushEvent('celebration',{kind:'obj'});showFloatingIcon('🎯','OBJECTIF ATTEINT !','big');showCelebration('obj');}
+  if(BOOSTER_DAY[ti]&&!S.milestones.earlyBirdDone&&sal>=7&&(new Date().getHours()<14)){
+    S.milestones.earlyBirdDone=true;var tseb=Date.now()+3;var pb=pickNextPrize(S.milestones);
+    pushEvent('floating',{icon:'🌅',label:'EARLY BIRD !',size:'big'});
+    pushEvent('earlybird',{prize:pb,ts:tseb});
+    spawnEarlyBirdAnim();
+    setTimeout(function(){spawnGoldenTicketForAll(pb,tseb,'earlybird');},1500);addTrophy('🌅','Early Bird !',todayStr);
+  }
+  if(BOOSTER_DAY[ti]&&a.boostOk&&sal>=20){
+    var newTr=Math.floor((sal-20)/5)+1,prevTr=prev>=20?Math.floor((prev-20)/5)+1:0;
+    if(newTr>prevTr){for(var t=prevTr+1;t<=newTr;t++){(function(tr){var tst=Date.now()+tr*10;var pt=pickNextPrize(S.milestones);
+      pushEvent('floating',{icon:'🚀',label:'TURBO x'+tr+' !',size:'big'});
+      pushEvent('turbo',{prize:pt,tranche:tr,ts:tst});
+      setTimeout(function(){spawnBonusTicket(pt,tst,'turbo');addTrophy('🚀','Turbo x'+tr,todayStr);},tr*400);})(t);}}
+  }
+  showToast('✅ Ventes mises à jour !');
+
+  var snapshotSal=sal;
+  var snapshotMilestones=JSON.parse(JSON.stringify(S.milestones));
+  var snapshotEvents=S.events.slice();
+  var snapshotTrophies=S.trophies?S.trophies.slice():[];
+  saveOptimistic(function(state){
+    var serverSal=state.sal[ti]!==null?state.sal[ti]:0;
+    state.sal[ti]=Math.max(snapshotSal,serverSal);
+    state.milestones=snapshotMilestones;
+    var existingTs={};
+    state.events=state.events||[];
+    for(var i=0;i<state.events.length;i++)existingTs[state.events[i].ts]=true;
+    for(var i=0;i<snapshotEvents.length;i++){
+      if(!existingTs[snapshotEvents[i].ts]) state.events.push(snapshotEvents[i]);
     }
-    if(BOOSTER_DAY[ti]&&!prevBoostHalf&&sal>=8){pushEvent('floating',{icon:'⚡',label:'50% Booster !',size:'medium'});showFloatingIcon('⚡','50% Booster !','medium');}
-    if(BOOSTER_DAY[ti]&&a.boostOk&&!prevBoost){
-      if(!S.milestones.boostDone){
-        S.milestones.boostDone=true;var ts3=Date.now()+2;var p3=pickNextPrize(S.milestones);
-        pushEvent('ticket',{prize:p3,ts:ts3});setTimeout(function(){spawnBonusTicket(p3,ts3,'boost');},600);
-      }
-      pushEvent('floating',{icon:'⚡',label:'BOOSTER DÉCLENCHÉ !',size:'big'});pushEvent('celebration',{kind:'boost'});
-      showFloatingIcon('⚡','BOOSTER DÉCLENCHÉ !','big');showCelebration('boost');
+    var existingTr={};
+    state.trophies=state.trophies||[];
+    for(var i=0;i<state.trophies.length;i++)existingTr[state.trophies[i].icon+state.trophies[i].label+state.trophies[i].day]=true;
+    for(var i=0;i<snapshotTrophies.length;i++){
+      var k=snapshotTrophies[i].icon+snapshotTrophies[i].label+snapshotTrophies[i].day;
+      if(!existingTr[k]) state.trophies.push(snapshotTrophies[i]);
     }
-    if(obj>0&&!prevObjHalf&&newCumul>=Math.round(obj*0.5)){pushEvent('floating',{icon:'🎯',label:'50% Objectif !',size:'medium'});showFloatingIcon('🎯','50% Objectif !','medium');}
-    if(a.objOk&&!prevObj){pushEvent('floating',{icon:'🎯',label:'OBJECTIF ATTEINT !',size:'big'});pushEvent('celebration',{kind:'obj'});showFloatingIcon('🎯','OBJECTIF ATTEINT !','big');showCelebration('obj');}
-    if(BOOSTER_DAY[ti]&&!S.milestones.earlyBirdDone&&sal>=7&&(new Date().getHours()<14)){
-      S.milestones.earlyBirdDone=true;var tseb=Date.now()+3;var pb=pickNextPrize(S.milestones);
-      pushEvent('floating',{icon:'🌅',label:'EARLY BIRD !',size:'big'});
-      pushEvent('earlybird',{prize:pb,ts:tseb});
-      spawnEarlyBirdAnim();
-      setTimeout(function(){spawnGoldenTicketForAll(pb,tseb,'earlybird');},1500);addTrophy('🌅','Early Bird !',todayStr);
-    }
-    if(BOOSTER_DAY[ti]&&a.boostOk&&sal>=20){
-      var newTr=Math.floor((sal-20)/5)+1,prevTr=prev>=20?Math.floor((prev-20)/5)+1:0;
-      if(newTr>prevTr){for(var t=prevTr+1;t<=newTr;t++){(function(tr){var tst=Date.now()+tr*10;var pt=pickNextPrize(S.milestones);
-        pushEvent('floating',{icon:'🚀',label:'TURBO x'+tr+' !',size:'big'});
-        pushEvent('turbo',{prize:pt,tranche:tr,ts:tst});
-        setTimeout(function(){spawnBonusTicket(pt,tst,'turbo');addTrophy('🚀','Turbo x'+tr,todayStr);},tr*400);})(t);}}
-    }
-    saveShared();
   });
 }
 
@@ -740,14 +754,12 @@ function spawnPlusOne(n){
   });});
 }
 
-// Durées par type de bon (ms)
 var TICKET_DURATIONS={jalon:12000,boost:15000,earlybird:10000,turbo:8000,rdv:10000};
 function spawnGoldenTicketForAll(prize,ts,type){
   if(ts&&collectedTicketTs.indexOf(ts)>=0)return;
   type=type||'jalon';
   var duration=TICKET_DURATIONS[type]||12000;
   var el=document.createElement('div');el.className='ticket-anim anim-'+type;
-  // Position de base selon l'animation (anim-boost/anim-turbo: left/top:50% dans CSS)
   if(type==='jalon'){
     el.style.left=(5+Math.random()*20)+'vw';
     el.style.top=(10+Math.random()*30)+'vh';
@@ -758,7 +770,6 @@ function spawnGoldenTicketForAll(prize,ts,type){
   el.innerHTML='🎟️<div class="tc-label">👆 CLIC !</div>'+
     '<div class="tc-timer"><div class="tc-timer-fill" style="animation-duration:'+duration+'ms"></div></div>';
   document.body.appendChild(el);
-  // Clignotement rouge les 3 dernières secondes
   var fill=el.querySelector('.tc-timer-fill');
   var criticalDelay=Math.max(0,duration-3000);
   var critTimer=setTimeout(function(){if(fill&&fill.parentNode)fill.classList.add('critical');},criticalDelay);
@@ -830,12 +841,21 @@ function showTicketWon(prize){
   launchConfetti();
 }
 
+// ===== SAVE OPTIMISTE CLAIM =====
 function saveClaim(prize){
   if(prize.ts)collectedTicketTs.push(prize.ts);
   if(!S.wonTickets)S.wonTickets=[];
   S.wonTickets.push(prize);
   wonTickets=S.wonTickets.filter(function(t){return t.day===prize.day;});
-  saveShared();updateTicketsBar();
+  updateTicketsBar();
+  saveOptimistic(function(state){
+    state.wonTickets=state.wonTickets||[];
+    var exists=false;
+    for(var i=0;i<state.wonTickets.length;i++){
+      if(state.wonTickets[i].ts===prize.ts&&state.wonTickets[i].label===prize.label){exists=true;break;}
+    }
+    if(!exists) state.wonTickets.push(prize);
+  });
 }
 
 function updateTicketsBar(){
@@ -883,15 +903,8 @@ function addTrophyDisplay(icon,label){
   list2.appendChild(t);
 }
 
-// ===== PALMARÈS PAR SEMAINE (lundi→dimanche) =====
-// Retourne l'index de semaine d'un jour (0=premier lundi couvrant le mois, 1=semaine suivante, etc.)
-// En avril 2026 : 1er avril = mercredi. Semaine 0 = 1 au 5 avril (partielle). Semaine 1 = 6-12, etc.
 function weekIdxOfDay(dayIdx){
-  // Date du 1er avril (index 0) : Mercredi. getDay()=3. Lundi=1.
-  // Offset en jours depuis le lundi de la semaine 0 : dayIdx + (firstDayOfWeek - 1)
-  // firstDayOfWeek = (new Date(YEAR,MONTH,1)).getDay() en JS dimanche=0...samedi=6
-  var firstDow=new Date(YEAR,MONTH,1).getDay(); // 0=dim..6=sam
-  // Convertir en ISO : lundi=0, dimanche=6
+  var firstDow=new Date(YEAR,MONTH,1).getDay();
   var iso=(firstDow+6)%7;
   return Math.floor((dayIdx+iso)/7);
 }
@@ -899,25 +912,14 @@ function weekIdxOfDay(dayIdx){
 function weekRangeLabel(weekIdx){
   var firstDow=new Date(YEAR,MONTH,1).getDay();
   var iso=(firstDow+6)%7;
-  // Premier jour (lundi) de cette semaine, en index jour du mois (peut être négatif si la semaine 0 commence en mars)
   var startDayIdx=weekIdx*7-iso;
   var endDayIdx=startDayIdx+6;
-  // Clamp dans le mois d'avril pour l'affichage
   var s=Math.max(startDayIdx,0),e=Math.min(endDayIdx,29);
-  var sLabel=(s+1)+' avril';
-  var eLabel=(e+1)+' avril';
-  return sLabel+' → '+eLabel;
+  return (s+1)+' avril → '+(e+1)+' avril';
 }
 
-function getCurrentWeekIdx(){
-  return weekIdxOfDay(todayIdx());
-}
-
-// Extrait l'index jour (0-29) d'une dayStr "YYYY-M-idx"
-function dayIdxFromStr(dayStr){
-  var parts=dayStr.split('-');
-  return parseInt(parts[2]);
-}
+function getCurrentWeekIdx(){return weekIdxOfDay(todayIdx());}
+function dayIdxFromStr(dayStr){return parseInt(dayStr.split('-')[2]);}
 
 function showPalmares(){
   var ov=document.createElement('div');ov.className='celebration-overlay';
@@ -925,9 +927,7 @@ function showPalmares(){
   var allTb=S.trophies?S.trophies.filter(function(t){return t.icon==='🚀';}):[];
   var allBons=S.wonTickets||[];
   var currentWeek=getCurrentWeekIdx();
-
-  // Regroupement par semaine
-  var weeks={}; // weekIdx -> {eb:[],tb:[],bonsVentes:[],bonsRdv:[]}
+  var weeks={};
   function bucket(w){if(!weeks[w])weeks[w]={eb:[],tb:[],bonsVentes:[],bonsRdv:[]};return weeks[w];}
   for(var i=0;i<allEb.length;i++){var w=weekIdxOfDay(dayIdxFromStr(allEb[i].day));bucket(w).eb.push(allEb[i]);}
   for(var i=0;i<allTb.length;i++){var w=weekIdxOfDay(dayIdxFromStr(allTb[i].day));bucket(w).tb.push(allTb[i]);}
@@ -937,47 +937,34 @@ function showPalmares(){
     if(b.rdv) bucket(w).bonsRdv.push(b);
     else bucket(w).bonsVentes.push(b);
   }
-  // Toujours afficher la semaine courante même si vide
   bucket(currentWeek);
-
-  // Tri des semaines décroissant (plus récente en premier)
   var weekIdxs=Object.keys(weeks).map(function(x){return parseInt(x);}).sort(function(a,b){return b-a;});
-
   var html='<div style="background:#1e1e3f;border-radius:24px;padding:24px;max-width:420px;width:94%;max-height:85vh;overflow-y:auto">'+
     '<div style="font-size:1.4rem;font-weight:900;text-align:center;margin-bottom:18px">🏆 Palmarès du mois</div>';
-
   for(var wi=0;wi<weekIdxs.length;wi++){
     var w=weekIdxs[wi];
     var data=weeks[w];
     var isCurrent=(w===currentWeek);
     var isFuture=(w>currentWeek);
-    if(isFuture) continue; // ne pas afficher les semaines futures
+    if(isFuture) continue;
     var rangeLbl=weekRangeLabel(w);
     var totalItems=data.eb.length+data.tb.length+data.bonsVentes.length+data.bonsRdv.length;
     var headBg=isCurrent?'linear-gradient(135deg,#6c5ce7,#a29bfe)':'rgba(255,255,255,.06)';
     var headColor=isCurrent?'#fff':'#a29bfe';
     var weekTitle=isCurrent?'📍 Semaine en cours':'Semaine du '+rangeLbl;
-    var arrow=isCurrent?'':'<span class="pal-arrow" style="transition:transform .2s;display:inline-block">▸</span>';
     var openAttr=isCurrent?'open':'';
-
     html+='<details '+openAttr+' class="pal-week" style="margin-bottom:10px;border-radius:14px;overflow:hidden;background:rgba(255,255,255,.03)">'+
       '<summary style="background:'+headBg+';color:'+headColor+';padding:10px 14px;font-weight:800;font-size:.88rem;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:8px">'+
         '<span>'+weekTitle+(isCurrent?'':' <span style="opacity:.6;font-weight:700;font-size:.75rem">('+rangeLbl+')</span>')+'</span>'+
-        '<span style="font-size:.72rem;opacity:.85;font-weight:700">'+(totalItems>0?totalItems+' 🏅':'—')+' '+arrow+'</span>'+
+        '<span style="font-size:.72rem;opacity:.85;font-weight:700">'+(totalItems>0?totalItems+' 🏅':'—')+'</span>'+
       '</summary>'+
       '<div style="padding:12px 14px 14px 14px">';
-
-    // Early Birds
     html+='<div style="font-size:.78rem;font-weight:800;color:#f9ca24;margin-bottom:6px">🌅 Early Birds</div>';
     if(!data.eb.length){html+='<div style="font-size:.72rem;opacity:.5;margin-bottom:10px">Aucun</div>';}
     else{for(var i=0;i<data.eb.length;i++)html+='<div style="background:rgba(249,202,36,.1);border-radius:10px;padding:6px 10px;margin-bottom:5px;font-size:.74rem;font-weight:700">🌅 '+dayLabel(data.eb[i].day)+' — 7 contrats avant 14h !</div>';}
-
-    // Turbos
     html+='<div style="font-size:.78rem;font-weight:800;color:#a29bfe;margin-bottom:6px;margin-top:10px">🚀 Turbos</div>';
     if(!data.tb.length){html+='<div style="font-size:.72rem;opacity:.5;margin-bottom:10px">Aucun</div>';}
     else{for(var i=0;i<data.tb.length;i++)html+='<div style="background:rgba(162,155,254,.1);border-radius:10px;padding:6px 10px;margin-bottom:5px;font-size:.74rem;font-weight:700">🚀 '+dayLabel(data.tb[i].day)+' — '+data.tb[i].label+'</div>';}
-
-    // Bons ventes groupés
     html+='<div style="font-size:.78rem;font-weight:800;color:#00b894;margin-bottom:6px;margin-top:10px">🎟️ Bons ventes gagnés</div>';
     if(!data.bonsVentes.length){html+='<div style="font-size:.72rem;opacity:.5;margin-bottom:10px">Aucun</div>';}
     else{
@@ -985,8 +972,6 @@ function showPalmares(){
       for(var i=0;i<data.bonsVentes.length;i++){var k=data.bonsVentes[i].icon+data.bonsVentes[i].label;if(!grp[k])grp[k]={icon:data.bonsVentes[i].icon,label:data.bonsVentes[i].label,items:[]};grp[k].items.push(data.bonsVentes[i]);}
       for(var k in grp){var g=grp[k];var names=g.items.map(function(x){return x.tri==='ÉQUIPE'?'Équipe 👥':x.tri;}).join(', ');var cnt=g.items.length>1?' × '+g.items.length:'';html+='<div style="background:rgba(0,184,148,.1);border-radius:10px;padding:6px 10px;margin-bottom:5px;font-size:.74rem;font-weight:700">'+g.icon+cnt+' '+g.label+'<div style="font-size:.68rem;opacity:.75;margin-top:2px">'+names+'</div></div>';}
     }
-
-    // Bons RDV groupés
     html+='<div style="font-size:.78rem;font-weight:800;color:#00cec9;margin-bottom:6px;margin-top:10px">📞 Bons RDV gagnés</div>';
     if(!data.bonsRdv.length){html+='<div style="font-size:.72rem;opacity:.5;margin-bottom:4px">Aucun</div>';}
     else{
@@ -994,10 +979,8 @@ function showPalmares(){
       for(var i=0;i<data.bonsRdv.length;i++){var k=data.bonsRdv[i].icon+data.bonsRdv[i].label;if(!grpR[k])grpR[k]={icon:data.bonsRdv[i].icon,label:data.bonsRdv[i].label,items:[]};grpR[k].items.push(data.bonsRdv[i]);}
       for(var k in grpR){var g=grpR[k];var names=g.items.map(function(x){return x.tri||'?';}).join(', ');var cnt=g.items.length>1?' × '+g.items.length:'';html+='<div style="background:rgba(0,206,201,.1);border:1px solid rgba(0,206,201,.25);border-radius:10px;padding:6px 10px;margin-bottom:5px;font-size:.74rem;font-weight:700">'+g.icon+cnt+' '+g.label+'<div style="font-size:.68rem;opacity:.75;margin-top:2px">'+names+'</div></div>';}
     }
-
     html+='</div></details>';
   }
-
   html+='<button onclick="this.closest(\'.celebration-overlay\').remove()" style="width:100%;margin-top:14px;background:linear-gradient(135deg,#6c5ce7,#a29bfe);color:#fff;border:none;border-radius:12px;padding:12px;font-weight:900;font-size:1rem;cursor:pointer;font-family:Nunito,sans-serif">Fermer</button></div>';
   ov.innerHTML=html;document.body.appendChild(ov);
 }
@@ -1031,7 +1014,6 @@ function launchConfetti(){
 
 function showToast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2500);}
 
-// ===== MODALE =====
 var editIdx=-1;
 function openModal(i){
   editIdx=i;
@@ -1059,7 +1041,6 @@ function openModal(i){
       el.appendChild(del);list.appendChild(el);
     }
   }
-  // Bons ventes
   var addDiv=document.getElementById('mAddTickets');addDiv.innerHTML='';
   for(var m=0;m<ALL_PRIZES.length;m++){
     var pr=ALL_PRIZES[m];
@@ -1069,7 +1050,6 @@ function openModal(i){
     (function(prize,di,ds){btn.onclick=function(){addModalTicket(prize,ds,di,false);};})(pr,i,todayStr);
     addDiv.appendChild(btn);
   }
-  // Bons RDV
   var addRdvDiv=document.getElementById('mAddRdvTickets');addRdvDiv.innerHTML='';
   for(var m=0;m<RDV_PRIZES.length;m++){
     var pr=RDV_PRIZES[m];
@@ -1082,9 +1062,9 @@ function openModal(i){
   document.getElementById('modalBg').classList.add('open');
 }
 
+// ===== SAVE OPTIMISTE : ajout de bon via modale =====
 function addModalTicket(prize,todayStr,dayIdx2,isRdv){
   var tri='ÉQUIPE';
-  // Bons RDV et individuels ventes → toujours demander trigramme
   if(isRdv||!prize.collectif){
     var input=prompt('Trigramme du commercial :','');
     if(!input)return;
@@ -1094,8 +1074,15 @@ function addModalTicket(prize,todayStr,dayIdx2,isRdv){
   if(isRdv) t.rdv=true;
   if(!S.wonTickets)S.wonTickets=[];S.wonTickets.push(t);
   var ti=todayIdx();if(dayIdx2===ti){wonTickets.push(t);updateTicketsBar();}
-  saveShared();showToast('✅ Bon ajouté !');
-  // Rafraîchir la liste des bons dans la modale
+  showToast('✅ Bon ajouté !');
+  saveOptimistic(function(state){
+    state.wonTickets=state.wonTickets||[];
+    var exists=false;
+    for(var i=0;i<state.wonTickets.length;i++){
+      if(state.wonTickets[i].ts===t.ts&&state.wonTickets[i].label===t.label){exists=true;break;}
+    }
+    if(!exists) state.wonTickets.push(t);
+  });
   openModal(dayIdx2);
 }
 
@@ -1105,31 +1092,53 @@ function removeModalTicket(todayStr,idx){
   var toRemove=dt[idx];S.wonTickets=S.wonTickets.filter(function(t){return t!==toRemove;});
   var ti=todayIdx(),ts=YEAR+'-'+(MONTH+1)+'-'+ti;
   wonTickets=S.wonTickets.filter(function(t){return t.day===ts;});
-  saveShared();openModal(editIdx);updateTicketsBar();showToast('🗑️ Bon supprimé !');
+  updateTicketsBar();openModal(editIdx);showToast('🗑️ Bon supprimé !');
+  saveOptimistic(function(state){
+    if(!state.wonTickets) return;
+    state.wonTickets=state.wonTickets.filter(function(t){
+      return !(t.ts===toRemove.ts&&t.label===toRemove.label&&t.day===toRemove.day);
+    });
+  });
 }
 
 function closeModal(){document.getElementById('modalBg').classList.remove('open');editIdx=-1;}
 
+// ===== SAVE OPTIMISTE MODALE =====
 function saveModal(){
   if(editIdx<0)return;
   var o=parseInt(document.getElementById('mObj').value),r=parseInt(document.getElementById('mRep').value);
   var s=document.getElementById('mSal').value,rdv=document.getElementById('mRdv').value;
   var idx=editIdx;
-  sync('⏳ Enregistrement…');
-  loadShared().then(function(){
-    S.obj[idx]=!isNaN(o)&&o>=0?o:0;S.rep[idx]=!isNaN(r)&&r>=0?r:0;
-    var ti=todayIdx();
-    var newSal=s!==''&&!isNaN(parseInt(s))?parseInt(s):null;
-    if(idx===ti&&newSal!==null&&S.sal[idx]!==null&&newSal<S.sal[idx]){
-      showToast('⚠️ Valeur ventes inférieure au cumul actuel ('+S.sal[idx]+'). Annulé.');
-      closeModal();return;
+  var ti=todayIdx();
+  var newSal=s!==''&&!isNaN(parseInt(s))?parseInt(s):null;
+  if(idx===ti&&newSal!==null&&S.sal[idx]!==null&&newSal<S.sal[idx]){
+    showToast('⚠️ Valeur ventes inférieure au cumul actuel ('+S.sal[idx]+'). Annulé.');
+    closeModal();return;
+  }
+  var newObj=!isNaN(o)&&o>=0?o:0;
+  var newRep=!isNaN(r)&&r>=0?r:0;
+  var newRdv=rdv!==''&&!isNaN(parseInt(rdv))?parseInt(rdv):null;
+  var newJoker=document.getElementById('mJoker').checked;
+  S.obj[idx]=newObj;S.rep[idx]=newRep;S.sal[idx]=newSal;S.rdv[idx]=newRdv;S.jokers[idx]=newJoker;
+  if(idx===ti&&S.sal[ti]!==null)document.getElementById('iSal').value=S.sal[ti];
+  if(idx===ti&&S.rdv[ti]!==null)document.getElementById('iRdv').value=S.rdv[ti];
+  render();closeModal();showToast('✅ Mis à jour !');
+  saveOptimistic(function(state){
+    state.obj[idx]=newObj;
+    state.rep[idx]=newRep;
+    if(newSal!==null){
+      var serverSal=state.sal[idx]!==null?state.sal[idx]:0;
+      state.sal[idx]=Math.max(newSal,serverSal);
+    }else{
+      state.sal[idx]=null;
     }
-    S.sal[idx]=newSal;
-    S.rdv[idx]=rdv!==''&&!isNaN(parseInt(rdv))?parseInt(rdv):null;
-    S.jokers[idx]=document.getElementById('mJoker').checked;
-    if(idx===ti&&S.sal[ti]!==null)document.getElementById('iSal').value=S.sal[ti];
-    if(idx===ti&&S.rdv[ti]!==null)document.getElementById('iRdv').value=S.rdv[ti];
-    render();saveShared();closeModal();showToast('✅ Mis à jour !');
+    if(newRdv!==null){
+      var serverRdv=state.rdv[idx]!==null?state.rdv[idx]:0;
+      state.rdv[idx]=Math.max(newRdv,serverRdv);
+    }else{
+      state.rdv[idx]=null;
+    }
+    state.jokers[idx]=newJoker;
   });
 }
 
@@ -1142,6 +1151,8 @@ function init(){
     if(S.sal[ti]!==null)document.getElementById('iSal').value=S.sal[ti];
     if(S.rdv[ti]!==null)document.getElementById('iRdv').value=S.rdv[ti];
     sync('✅ Prêt · '+now());render();
+    // Refresh auto toutes les 15 minutes
+    setInterval(autoRefresh, 15*60*1000);
   });
 }
 init();
