@@ -3,13 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🏆 Challenge Avril 2026</title>
+<title>🏆 Challenge Avril 2026 — Archive</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Nunito',sans-serif;background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);min-height:100vh;color:#fff;padding:20px}
 h1{text-align:center;font-size:2rem;font-weight:900;margin-bottom:4px;background:linear-gradient(90deg,#f9ca24,#f0932b,#eb4d4b,#6c5ce7);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .subtitle{text-align:center;font-size:.9rem;color:#a29bfe;margin-bottom:6px}
+.archive-banner{background:linear-gradient(135deg,#fdcb6e,#e17055);color:#1a1a2e;border-radius:14px;padding:12px 16px;margin-bottom:14px;text-align:center;font-weight:800;font-size:.9rem;box-shadow:0 4px 16px rgba(253,203,110,.3)}
+.archive-banner .ab-sub{font-size:.72rem;font-weight:700;opacity:.8;margin-top:3px}
 .sync-bar{text-align:center;font-size:.75rem;color:#55efc4;margin-bottom:14px;min-height:16px}
 .card{background:linear-gradient(135deg,#6c5ce7,#a29bfe);border-radius:24px;padding:20px;margin-bottom:14px;box-shadow:0 8px 32px rgba(108,92,231,.4)}
 .tc-label{font-size:.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;opacity:.8;margin-bottom:4px}
@@ -19,21 +21,6 @@ h1{text-align:center;font-size:2rem;font-weight:900;margin-bottom:4px;background
 .kpi .kv{font-size:1.7rem;font-weight:900;line-height:1}
 .kpi .kl{font-size:.6rem;font-weight:700;opacity:.85;margin-top:3px}
 .kpi.hl{background:rgba(0,0,0,.2);border:2px solid rgba(255,255,255,.25)}
-.bar-group{margin-bottom:12px}
-.bar-lbl{display:flex;justify-content:space-between;font-size:.72rem;opacity:.85;margin-bottom:4px;font-weight:700}
-.bar-track{background:rgba(0,0,0,.28);border-radius:50px;height:32px;overflow:hidden;position:relative}
-.bar-fill{height:100%;border-radius:50px;transition:width .6s cubic-bezier(.34,1.56,.64,1);position:absolute;left:0;top:0}
-.bar-text{position:absolute;width:100%;text-align:center;font-size:.85rem;font-weight:900;line-height:32px;z-index:2;pointer-events:none;text-shadow:0 1px 3px rgba(0,0,0,.4)}
-.ventes-section{background:rgba(0,0,0,.18);border-radius:16px;padding:14px;margin-bottom:10px}
-.rdv-section{background:rgba(0,0,0,.12);border:1px dashed rgba(255,255,255,.2);border-radius:16px;padding:12px}
-.ventes-title{font-size:.72rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;opacity:.7;margin-bottom:10px}
-.irow{display:flex;gap:7px;align-items:center}
-.irow label{font-size:.75rem;font-weight:800;width:110px;flex-shrink:0;opacity:.9}
-.irow input{flex:1;padding:10px 6px;border-radius:9px;border:none;font-size:1.1rem;font-weight:800;text-align:center;background:rgba(255,255,255,.93);color:#1a1a2e;font-family:'Nunito',sans-serif}
-.bsm{padding:9px 13px;border-radius:9px;background:rgba(255,255,255,.2);color:#fff;font-size:1.1rem;border:none;cursor:pointer;font-weight:800;flex-shrink:0}
-.btn-save{display:block;width:100%;padding:12px;border-radius:12px;border:none;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;font-size:.95rem;margin-top:10px}
-.btn-green{background:linear-gradient(135deg,#00b894,#00cec9);color:#fff}
-.btn-teal{background:linear-gradient(135deg,#00cec9,#6c5ce7);color:#fff}
 .bp{border-radius:20px;padding:16px;margin-bottom:14px}
 .bp-alive{background:linear-gradient(135deg,#f9ca24,#f0932b);color:#1a1a2e}
 .bp-risk{background:rgba(253,203,110,.1);border:2px solid #fdcb6e;color:#fdcb6e}
@@ -42,12 +29,11 @@ h1{text-align:center;font-size:2rem;font-weight:900;margin-bottom:4px;background
 .bp-icon{font-size:1.8rem}.bp-title{font-size:.95rem;font-weight:900}
 .bp-sub{font-size:.75rem;font-weight:700;opacity:.85;margin-top:2px}
 .bp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(28px,1fr));gap:4px;margin-bottom:8px}
-.bpd{border-radius:6px;height:34px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:.58rem;font-weight:800;cursor:pointer}
+.bpd{border-radius:6px;height:34px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:.58rem;font-weight:800;cursor:default}
 .bpd span{font-size:.72rem;font-weight:900}
 .bpd.ok{background:#00b894;color:#fff}
 .bpd.fail{background:#d63031;color:#fff}
 .bpd.joker{background:#a29bfe;color:#fff}
-.bpd.today{background:rgba(255,255,255,.22);border:2px solid currentColor}
 .bpd.future{background:rgba(255,255,255,.06);color:rgba(255,255,255,.2)}
 .bpd.nowork{background:rgba(0,0,0,.12);color:rgba(255,255,255,.15);font-size:.5rem}
 .legend{display:flex;gap:8px;flex-wrap:wrap;font-size:.66rem;font-weight:700;opacity:.82}
@@ -59,8 +45,7 @@ h1{text-align:center;font-size:2rem;font-weight:900;margin-bottom:4px;background
 .tb .tn{font-size:1.35rem;font-weight:900;line-height:1.1}
 .tb .tl{font-size:.62rem;opacity:.6;font-weight:700;margin-top:2px}
 .calendar{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:7px;margin-bottom:24px}
-.dc{border-radius:13px;padding:8px 6px;text-align:center;cursor:pointer;border:2px solid transparent;transition:transform .15s;position:relative}
-.dc:hover{transform:translateY(-2px)}
+.dc{border-radius:13px;padding:8px 6px;text-align:center;cursor:default;border:2px solid transparent;position:relative}
 .dc .dd{font-size:.56rem;font-weight:700;opacity:.6;text-transform:uppercase}
 .dc .dn{font-size:1.35rem;font-weight:900}
 .dc .dobj{font-size:.56rem;opacity:.6}
@@ -70,83 +55,26 @@ h1{text-align:center;font-size:2rem;font-weight:900;margin-bottom:4px;background
 .dc-ok{background:linear-gradient(135deg,#00b894,#55efc4);color:#1a1a2e}
 .dc-min{background:linear-gradient(135deg,#fdcb6e,#e17055);color:#1a1a2e}
 .dc-fail{background:linear-gradient(135deg,#d63031,#e17055);color:#fff}
-.dc-today{background:linear-gradient(135deg,#6c5ce7,#a29bfe);color:#fff;border-color:#f9ca24;box-shadow:0 0 14px rgba(249,202,36,.35)}
 .dc-future{background:rgba(255,255,255,.05);color:rgba(255,255,255,.3)}
 .dc-offday{background:rgba(255,255,255,.06);color:rgba(255,255,255,.45);border:1px dashed rgba(255,255,255,.12)}
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:100;align-items:center;justify-content:center}
 .modal-bg.open{display:flex}
 .modal{background:#1e1e3f;border-radius:20px;padding:22px;width:92%;max-width:380px;max-height:85vh;overflow-y:auto}
 .modal h3{font-size:1rem;font-weight:900;margin-bottom:14px;text-align:center}
-.mf{margin-bottom:10px}
-.mf label{font-size:.75rem;font-weight:700;opacity:.65;display:block;margin-bottom:3px}
-.mf input{width:100%;padding:10px;border-radius:9px;border:2px solid #6c5ce7;background:#0f0f2e;color:#fff;font-size:1rem;font-weight:800;text-align:center;font-family:'Nunito',sans-serif}
-.jr{display:flex;align-items:center;gap:8px;background:rgba(162,155,254,.1);border-radius:9px;padding:9px 12px;margin-bottom:12px}
-.jr input{width:18px;height:18px;cursor:pointer;flex-shrink:0}
-.jr label{font-size:.8rem;font-weight:700;margin:0;cursor:pointer}
-.mbtns{display:flex;gap:7px}
-.btn-cancel{background:rgba(255,255,255,.1);color:#fff;flex:1;padding:10px;border-radius:10px;border:none;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif}
-.ticket{position:fixed;z-index:600;cursor:pointer;font-size:4rem;filter:drop-shadow(0 0 20px gold) drop-shadow(0 0 40px gold)}
-.ticket-popup{position:fixed;inset:0;z-index:700;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.8)}
-.ticket-card{background:linear-gradient(135deg,#f9ca24,#f0932b);border-radius:24px;padding:28px;text-align:center;max-width:320px;width:90%;box-shadow:0 0 80px rgba(249,202,36,.8);animation:cardPop .4s cubic-bezier(.34,1.56,.64,1)}
-@keyframes cardPop{from{transform:scale(0) rotate(-10deg)}to{transform:scale(1) rotate(0)}}
-.ticket-card .tc-icon{font-size:4rem;margin-bottom:8px}
-.ticket-card .tc-title{font-size:1.3rem;font-weight:900;color:#1a1a2e;margin-bottom:6px}
-.ticket-card .tc-prize{font-size:1.1rem;font-weight:800;color:#1a1a2e;background:rgba(255,255,255,.5);border-radius:12px;padding:10px 14px;margin-bottom:12px}
-.ticket-card .tc-sub{font-size:.8rem;color:#1a1a2e;opacity:.75;margin-bottom:12px}
-.ticket-card .tri-input{width:100%;padding:11px;border-radius:10px;border:2px solid #1a1a2e;background:rgba(255,255,255,.9);color:#1a1a2e;font-size:1.4rem;font-weight:900;text-align:center;font-family:'Nunito',sans-serif;text-transform:uppercase;margin-bottom:12px;letter-spacing:4px}
-.ticket-card .tc-btn{background:#1a1a2e;color:#f9ca24;border:none;border-radius:12px;padding:12px 24px;font-weight:900;font-size:1rem;cursor:pointer;font-family:'Nunito',sans-serif;width:100%}
+.detail-row{display:flex;justify-content:space-between;padding:8px 12px;background:rgba(255,255,255,.05);border-radius:10px;margin-bottom:6px;font-size:.85rem}
+.detail-row .dl{opacity:.7;font-weight:700}
+.detail-row .dv{font-weight:900}
+.btn-cancel{background:rgba(255,255,255,.1);color:#fff;width:100%;padding:12px;border-radius:10px;border:none;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;font-size:.95rem;margin-top:10px}
 .tickets-bar{background:rgba(249,202,36,.1);border:2px solid rgba(249,202,36,.3);border-radius:16px;padding:12px 16px;margin-bottom:14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .tb-title{font-size:.85rem;font-weight:800;color:#f9ca24}
 .tickets-list{display:flex;gap:8px;flex-wrap:wrap;flex:1}
-.ticket-won{background:linear-gradient(135deg,#f9ca24,#f0932b);border-radius:10px;padding:6px 12px;font-size:.75rem;font-weight:800;color:#1a1a2e;cursor:pointer;transition:transform .15s}
-.ticket-won:hover{transform:scale(1.05)}
-.trophies-bar{background:rgba(255,255,255,.06);border:2px solid rgba(255,255,255,.15);border-radius:16px;padding:12px 16px;margin-bottom:14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.trophy-item{background:linear-gradient(135deg,#a29bfe,#6c5ce7);border-radius:10px;padding:6px 12px;font-size:.78rem;font-weight:800;color:#fff;animation:cardPop .4s cubic-bezier(.34,1.56,.64,1)}
 .celebration-overlay{position:fixed;inset:0;z-index:800;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.85)}
-.celebration-card{border-radius:32px;padding:40px 32px;text-align:center;max-width:360px;width:92%;animation:cardPop .5s cubic-bezier(.34,1.56,.64,1)}
-.celebration-card.obj-card{background:linear-gradient(135deg,#6c5ce7,#a29bfe)}
-.celebration-card.boost-card{background:linear-gradient(135deg,#f9ca24,#f0932b);color:#1a1a2e}
-.celebration-card .cc-icon{font-size:6rem;margin-bottom:8px;display:block;animation:bigBounce .6s cubic-bezier(.34,1.56,.64,1)}
-@keyframes bigBounce{0%{transform:scale(0) rotate(-20deg)}60%{transform:scale(1.3) rotate(5deg)}100%{transform:scale(1) rotate(0)}}
-.celebration-card .cc-title{font-size:2rem;font-weight:900;margin-bottom:6px;line-height:1.1}
-.celebration-card .cc-sub{font-size:.95rem;opacity:.9;margin-bottom:24px;font-weight:700}
-.celebration-card button{border:none;border-radius:14px;padding:14px 32px;font-weight:900;font-size:1.1rem;cursor:pointer;font-family:'Nunito',sans-serif}
-.celebration-card.obj-card button{background:#f9ca24;color:#1a1a2e}
-.celebration-card.boost-card button{background:#1a1a2e;color:#f9ca24}
-.plus-one{position:fixed;font-size:3.5rem;font-weight:900;color:#f9ca24;text-shadow:0 0 20px rgba(249,202,36,.8);pointer-events:none;z-index:500;opacity:0}
 .toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);background:#00b894;color:#fff;padding:10px 20px;border-radius:50px;font-weight:800;font-size:.85rem;opacity:0;transition:opacity .3s;z-index:300;white-space:nowrap}
 .toast.show{opacity:1}
-.cc{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:200}
-.fly-phone{position:fixed;pointer-events:none;z-index:500;font-size:2.4rem;filter:drop-shadow(0 0 10px #00cec9);animation:flyPhone 1.1s cubic-bezier(.22,.61,.36,1) forwards}
-@keyframes flyPhone{0%{opacity:1;transform:translateX(-50%) scale(1)}100%{opacity:0;transform:translateX(-50%) scale(1.4) translateY(-80vh)}}
-.ticket-won.rdv-ticket{background:linear-gradient(135deg,#00b894,#00cec9);color:#fff}
-.ticket-anim{position:fixed;z-index:600;cursor:pointer;font-size:3.8rem;filter:drop-shadow(0 0 20px gold) drop-shadow(0 0 40px gold);user-select:none}
-.ticket-anim .tc-label{font-size:.7rem;font-weight:900;background:#f9ca24;color:#1a1a2e;border-radius:6px;padding:2px 6px;text-align:center;margin-top:2px;white-space:nowrap}
-.tc-timer{position:absolute;left:0;right:0;bottom:-10px;height:4px;background:rgba(255,255,255,.2);border-radius:2px;overflow:hidden}
-.tc-timer-fill{height:100%;background:linear-gradient(90deg,#00b894,#f9ca24,#d63031);width:100%;transform-origin:left;animation:timerShrink linear forwards}
-.tc-timer-fill.critical{animation:timerShrink linear forwards,timerBlink .3s ease-in-out infinite}
-@keyframes timerShrink{from{transform:scaleX(1)}to{transform:scaleX(0)}}
-@keyframes timerBlink{0%,100%{background:#d63031;box-shadow:0 0 8px #d63031}50%{background:#ff7675;box-shadow:0 0 16px #ff7675}}
-@keyframes slideDiag{0%{transform:translate(-20vw,-10vh) scale(.5);opacity:0}10%{transform:translate(0,0) scale(1);opacity:1}90%{transform:translate(60vw,40vh) scale(1);opacity:1}100%{transform:translate(80vw,55vh) scale(.5);opacity:0}}
-.anim-jalon{animation:slideDiag 12s linear forwards}
-@keyframes orbitCircle{0%{transform:translate(-50%,-50%) rotate(0deg) translateX(120px) rotate(0deg) scale(0)}8%{transform:translate(-50%,-50%) rotate(0deg) translateX(120px) rotate(0deg) scale(1.1)}100%{transform:translate(-50%,-50%) rotate(720deg) translateX(120px) rotate(-720deg) scale(1)}}
-.anim-boost{left:50%;top:50%;animation:orbitCircle 15s cubic-bezier(.4,0,.6,1) forwards;filter:drop-shadow(0 0 25px gold) drop-shadow(0 0 50px #f9ca24)}
-@keyframes floatSoft{0%{transform:translateY(0) scale(.6);opacity:0}10%{transform:translateY(-5px) scale(1);opacity:1}50%{transform:translateY(-30px) translateX(20px) scale(1)}90%{transform:translateY(-10px) translateX(-15px) scale(1);opacity:1}100%{transform:translateY(20px) translateX(0) scale(.6);opacity:0}}
-.anim-earlybird{animation:floatSoft 10s ease-in-out forwards;filter:drop-shadow(0 0 15px #f9ca24) drop-shadow(0 0 30px #f0932b)}
-@keyframes pinballBounce{0%{transform:translate(0,0) scale(0)}5%{transform:translate(30vw,-20vh) scale(1)}18%{transform:translate(-25vw,-15vh) scale(1)}32%{transform:translate(35vw,25vh) scale(1)}48%{transform:translate(-30vw,10vh) scale(1)}64%{transform:translate(20vw,-25vh) scale(1)}80%{transform:translate(-20vw,20vh) scale(1)}95%{transform:translate(25vw,0) scale(1);opacity:1}100%{transform:translate(0,0) scale(.5);opacity:0}}
-.anim-turbo{left:50%;top:50%;animation:pinballBounce 8s cubic-bezier(.5,.05,.5,.95) forwards;filter:drop-shadow(0 0 20px #a29bfe) drop-shadow(0 0 40px #6c5ce7)}
-.anim-turbo::after{content:'';position:absolute;inset:-20px;border-radius:50%;background:radial-gradient(circle,rgba(162,155,254,.5),transparent 70%);z-index:-1;animation:turboTrail 8s linear forwards}
-@keyframes turboTrail{0%,100%{opacity:0}10%,90%{opacity:.8}}
-@keyframes pingPongV{0%{transform:translateY(0) scale(0)}8%{transform:translateY(-30vh) scale(1)}20%{transform:translateY(10vh) scale(1)}35%{transform:translateY(-25vh) scale(1)}50%{transform:translateY(15vh) scale(1)}65%{transform:translateY(-20vh) scale(1)}80%{transform:translateY(5vh) scale(1);opacity:1}100%{transform:translateY(-10vh) scale(.5);opacity:0}}
-.anim-rdv{animation:pingPongV 10s cubic-bezier(.34,1.56,.64,1) forwards;filter:drop-shadow(0 0 15px #00cec9) drop-shadow(0 0 30px #00b894)}
 @media (max-width:600px){
   body{padding:12px;padding-bottom:32px}
   .kpi-row{display:grid;grid-template-columns:1fr 1fr;gap:7px;flex-wrap:unset}
   .kpi{min-width:unset}.kpi .kv{font-size:1.45rem}
-  .bar-text{font-size:.72rem}
-  .irow{gap:5px}.irow label{display:none}
-  .bsm{padding:10px 12px;font-size:1rem;min-width:36px}
-  .irow input{min-width:0;font-size:1rem;padding:10px 4px}
   .bp-grid{grid-template-columns:repeat(auto-fill,minmax(32px,1fr))}.bpd{height:36px}
   .totals{display:grid;grid-template-columns:1fr 1fr;gap:8px;flex-wrap:unset}.tb{min-width:unset}
   .calendar{grid-template-columns:repeat(auto-fill,minmax(70px,1fr));gap:5px}
@@ -154,75 +82,38 @@ h1{text-align:center;font-size:2rem;font-weight:900;margin-bottom:4px;background
   .dc .dobj,.dc .dres,.dc .drep{font-size:.52rem}
   .modal-bg{align-items:flex-end;justify-content:center}
   .modal{border-radius:20px 20px 0 0;width:100%;max-width:100%;max-height:90vh;padding:18px 16px}
-  .ticket-won{font-size:.68rem}.trophy-item{font-size:.7rem}
   .toast{max-width:88vw;white-space:normal;text-align:center;font-size:.8rem}
-  button,.bsm,.dc,.bpd,.ticket-won{touch-action:manipulation}
-  @supports(padding-bottom:env(safe-area-inset-bottom)){
-    body{padding-bottom:calc(32px + env(safe-area-inset-bottom))}
-    .modal{padding-bottom:calc(18px + env(safe-area-inset-bottom))}
-  }
 }
 @media (max-width:360px){
-  .irow label{display:none}.bsm{padding:8px 9px;font-size:.9rem;min-width:32px}
   .kpi .kv{font-size:1.2rem}.calendar{grid-template-columns:repeat(auto-fill,minmax(58px,1fr))}
 }
 </style>
 </head>
 <body>
-<h1>🏆 Challenge Avril</h1>
-<p class="subtitle">Objectif collectif · Avril 2026 · Booster +25% en jeu 🚀</p>
+<h1>🏆 Challenge Avril 2026</h1>
+<p class="subtitle">Bilan définitif · Archive consultable</p>
 <div class="sync-bar" id="syncBar">⏳ Chargement…</div>
 <div id="app" style="display:none">
+  <div class="archive-banner">
+    📚 MODE ARCHIVE — Lecture seule
+    <div class="ab-sub">Le challenge d'avril est terminé. Aucune modification possible.</div>
+  </div>
+
   <div class="card">
-    <div class="tc-label">📅 Aujourd'hui</div>
-    <div class="tc-date" id="tcDate">—</div>
+    <div class="tc-label">📅 Bilan du mois</div>
+    <div class="tc-date">Avril 2026 — 30 jours</div>
     <div class="kpi-row">
-      <div class="kpi"><div class="kv" id="kRep">0</div><div class="kl">☀️ Report</div></div>
-      <div class="kpi"><div class="kv" id="kSal">—</div><div class="kl">✍️ Ventes</div></div>
-      <div class="kpi"><div class="kv" id="kCum">—</div><div class="kl">📦 Cumul</div></div>
-      <div class="kpi hl"><div class="kv" id="kObj">—</div><div class="kl">🎯 Objectif</div></div>
-    </div>
-    <div class="bar-group">
-      <div class="bar-lbl"><span>🎯 Progression objectif</span><span id="lblObj">—</span></div>
-      <div class="bar-track">
-        <div class="bar-fill" id="barObj" style="width:0%;background:linear-gradient(90deg,#d63031,#e17055)"></div>
-        <div class="bar-text" id="barObjTxt">—</div>
-      </div>
-    </div>
-    <div class="bar-group" id="barBoostGroup" style="margin-top:4px;margin-bottom:16px">
-      <div class="bar-lbl"><span>⚡ Booster — ventes nettes</span><span id="lblBoost">0/16</span></div>
-      <div class="bar-track">
-        <div class="bar-fill" id="barBoost" style="width:0%"></div>
-        <div class="bar-text" id="barBoostTxt">0/16</div>
-      </div>
-    </div>
-    <div class="ventes-section">
-      <div class="ventes-title">✍️ Ventes du jour</div>
-      <div class="irow">
-        <label>Ventes nettes</label>
-        <button class="bsm" onclick="adjSal(-1)">−</button>
-        <input type="number" id="iSal" placeholder="0" min="0">
-        <button class="bsm" onclick="adjSal(1)">+</button>
-      </div>
-      <button class="btn-save btn-green" onclick="saveVentes()">✓ Mettre à jour les ventes</button>
-    </div>
-    <div style="height:10px"></div>
-    <div class="rdv-section">
-      <div class="ventes-title">📞 RDV transférés</div>
-      <div class="irow">
-        <label>RDV du jour</label>
-        <button class="bsm" onclick="adjRdv(-1)">−</button>
-        <input type="number" id="iRdv" placeholder="0" min="0">
-        <button class="bsm" onclick="adjRdv(1)">+</button>
-      </div>
-      <button class="btn-save btn-teal" onclick="saveRdv()">✓ Mettre à jour les RDV</button>
+      <div class="kpi"><div class="kv" id="kTotVentes">0</div><div class="kl">✍️ Ventes totales</div></div>
+      <div class="kpi"><div class="kv" id="kTotObj">0</div><div class="kl">🎯 Objectif total</div></div>
+      <div class="kpi"><div class="kv" id="kTotRdv">0</div><div class="kl">📞 RDV totaux</div></div>
+      <div class="kpi hl"><div class="kv" id="kPct">—</div><div class="kl">📈 Atteinte</div></div>
     </div>
   </div>
 
-  <div class="bp bp-alive" id="bpPanel">
+  <div class="bp" id="bpPanel">
     <div class="bp-head">
       <div class="bp-icon" id="bpIcon">⚡</div>
-      <div><div class="bp-title" id="bpTitle">Booster +25% — EN JEU</div><div class="bp-sub" id="bpSub">—</div></div>
+      <div><div class="bp-title" id="bpTitle">Booster +25%</div><div class="bp-sub" id="bpSub">—</div></div>
     </div>
     <div class="bp-grid" id="bpGrid"></div>
     <div class="legend">
@@ -241,122 +132,38 @@ h1{text-align:center;font-size:2rem;font-weight:900;margin-bottom:4px;background
     <div class="tb"><div class="tn" id="totFail">0</div><div class="tl">Jours 🔴</div></div>
   </div>
 
-  <div class="trophies-bar" id="trophiesBar" style="display:none">
-    <div class="tb-title">🏅 Trophées du jour</div>
-    <div id="trophiesList" style="display:flex;gap:8px;flex-wrap:wrap"></div>
-  </div>
-
   <div class="tickets-bar" id="ticketsBar" style="display:none">
-    <div class="tb-title">🎟️ Bons gagnés aujourd'hui</div>
+    <div class="tb-title">🎟️ Tous les bons gagnés</div>
     <div class="tickets-list" id="ticketsList"></div>
   </div>
 
   <div style="display:flex;gap:10px;justify-content:center;margin-bottom:14px;flex-wrap:wrap">
-    <button onclick="manualRefresh()" style="background:linear-gradient(135deg,#6c5ce7,#a29bfe);color:#fff;border:none;border-radius:50px;padding:10px 22px;font-weight:800;font-size:.9rem;cursor:pointer;font-family:'Nunito',sans-serif">🔄 Mettre à jour</button>
-    <button onclick="showPalmares()" style="background:linear-gradient(135deg,#f9ca24,#f0932b);color:#1a1a2e;border:none;border-radius:50px;padding:10px 22px;font-weight:800;font-size:.9rem;cursor:pointer;font-family:'Nunito',sans-serif">🏆 Palmarès</button>
-    <button onclick="replayCelebrations()" style="background:linear-gradient(135deg,#00b894,#00cec9);color:#fff;border:none;border-radius:50px;padding:10px 22px;font-weight:800;font-size:.9rem;cursor:pointer;font-family:'Nunito',sans-serif">🎬 Replay</button>
+    <button onclick="showPalmares()" style="background:linear-gradient(135deg,#f9ca24,#f0932b);color:#1a1a2e;border:none;border-radius:50px;padding:10px 22px;font-weight:800;font-size:.9rem;cursor:pointer;font-family:'Nunito',sans-serif">🏆 Palmarès complet</button>
   </div>
 
-  <div class="sec">🗓️ Calendrier <span style="font-size:.7rem;opacity:.4;font-weight:400">(cliquer pour saisir)</span></div>
+  <div class="sec">🗓️ Calendrier complet <span style="font-size:.7rem;opacity:.4;font-weight:400">(cliquer pour voir le détail)</span></div>
   <div class="calendar" id="calendar"></div>
 </div>
 
 <div class="modal-bg" id="modalBg">
   <div class="modal">
-    <h3 id="modalTitle">📅 Modifier le jour</h3>
-    <div class="mf"><label>🎯 Objectif du jour</label><input type="number" id="mObj" placeholder="ex: 19" min="0"></div>
-    <div class="mf"><label>☀️ Report du matin</label><input type="number" id="mRep" placeholder="ex: 4" min="0"></div>
-    <div class="mf"><label>✍️ Ventes nettes</label><input type="number" id="mSal" placeholder="0" min="0"></div>
-    <div class="mf"><label>📞 RDV transférés</label><input type="number" id="mRdv" placeholder="0" min="0"></div>
-    <div class="mf">
-      <label>🎟️ Bons du jour</label>
-      <div id="mTicketsList" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;min-height:24px"></div>
-      <div style="font-size:.7rem;opacity:.6;margin-bottom:4px">Ajouter un bon ventes :</div>
-      <div id="mAddTickets" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px"></div>
-      <div style="font-size:.7rem;opacity:.6;margin-bottom:4px">Ajouter un bon RDV 📞 :</div>
-      <div id="mAddRdvTickets" style="display:flex;flex-wrap:wrap;gap:5px"></div>
-    </div>
-    <div class="jr"><input type="checkbox" id="mJoker"><label for="mJoker">🃏 Joker pour ce jour</label></div>
-    <div class="mbtns">
-      <button class="btn-cancel" onclick="closeModal()">Annuler</button>
-      <button class="btn-save btn-green" style="flex:1;margin-top:0" onclick="saveModal()">💾 Enregistrer</button>
-    </div>
+    <h3 id="modalTitle">📅 Détail du jour</h3>
+    <div id="modalBody"></div>
+    <button class="btn-cancel" onclick="closeModal()">Fermer</button>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
-<div class="cc" id="cc"></div>
 
 <script>
 var BIN_ID  = '69d7f09336566621a8969ca7';
 var API_KEY = '$2a$10$j.EvQYa3TiVfgAxZJWVcPeMvrKUWQ83egNT9ugRIUkk.HacoWpioe';
 var BIN_URL = 'https://api.jsonbin.io/v3/b/'+BIN_ID;
-var HEADERS = {'Content-Type':'application/json','X-Master-Key':API_KEY,'X-Bin-Versioning':'false'};
 
 var MONTH=3,YEAR=2026,MIN_BOOST=16,MAX_JOKERS=2;
 var DAYS=['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
 var WORKED=[1,1,1,1,0,0,1,1,1,1,1,0,1,1,1,1,1,1,0,1,1,1,1,1,1,0,1,1,1,1];
 var BOOSTER_DAY=[1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1];
-
-var IND_PRIZES=[
-  {icon:'🧖',label:'Masque visage ou soin mains',collectif:false},
-  {icon:'📓',label:'Carnet coloriage adulte + feutres',collectif:false},
-  {icon:'🕯️',label:'Bougie parfumée',collectif:false},
-  {icon:'🧸',label:'Peluche anti-stress',collectif:false},
-  {icon:'🌿',label:'Plante de bureau (succulente)',collectif:false},
-  {icon:'🎨',label:'Kit aquarelle débutant',collectif:false},
-  {icon:'📚',label:'Livre de poche au choix',collectif:false},
-  {icon:'🧩',label:'Mini puzzle 500 pièces',collectif:false},
-  {icon:'💊',label:'Gummies magnésium',collectif:false},
-  {icon:'💆',label:'Bon Sephora 15€',collectif:false},
-  {icon:'🛍️',label:'Bon Amazon 10€',collectif:false},
-  {icon:'🍬',label:'Paquet de bonbons',collectif:false},
-  {icon:'🎟️',label:'Place de cinéma',collectif:false}
-];
-
-var COL_PRIZES=[
-  {icon:'🧋',label:'Bubble tea pour toute l\'équipe !',collectif:true},
-  {icon:'🥐',label:'Petit-déj\' croissants frais !',collectif:true},
-  {icon:'🍣',label:'Plateau sushis pour l\'équipe !',collectif:true},
-  {icon:'🧺',label:'Déj pique-nique des beaux jours !',collectif:true}
-];
-
-var RDV_PRIZES=[
-  {icon:'🍬',label:'Paquet de bonbons !'},
-  {icon:'🕯️',label:'Bougie parfumée !'},
-  {icon:'💊',label:'Gummies magnésium !'},
-  {icon:'📚',label:'Livre de poche au choix !'}
-];
-
-var ALL_PRIZES=IND_PRIZES.concat(COL_PRIZES);
-
-function pickNextPrize(milestones){
-  if(!milestones.prizeSeq) milestones.prizeSeq=[];
-  if(milestones.lastIndIdx===undefined) milestones.lastIndIdx=-1;
-  if(milestones.lastColIdx===undefined) milestones.lastColIdx=-1;
-  var seq=milestones.prizeSeq;
-  var len=seq.length;
-  var last=len>0?seq[len-1]:null;
-  var prev=len>1?seq[len-2]:null;
-  var forceCol=(last==='ind'&&prev==='ind');
-  var forceInd=(last==='col');
-  var isCol;
-  if(forceCol) isCol=true;
-  else if(forceInd) isCol=false;
-  else isCol=(Math.random()<0.34);
-  if(isCol){seq.push('col');return pickFrom(COL_PRIZES,milestones,'lastColIdx');}
-  else{seq.push('ind');return pickFrom(IND_PRIZES,milestones,'lastIndIdx');}
-}
-
-function pickFrom(list,milestones,idxKey){
-  var last=milestones[idxKey]!=null?milestones[idxKey]:-1;
-  var av=[];
-  for(var i=0;i<list.length;i++){if(i!==last)av.push(i);}
-  if(!av.length)av=[0];
-  var idx=av[Math.floor(Math.random()*av.length)];
-  milestones[idxKey]=idx;
-  return list[idx];
-}
 
 var S={
   obj:new Array(30).fill(0),rep:new Array(30).fill(0),
@@ -364,38 +171,6 @@ var S={
   jokers:new Array(30).fill(false),
   milestones:null,events:[],wonTickets:[],trophies:[]
 };
-var wonTickets=[],shownTrophies=[],lastSeenEventTs=0,collectedTicketTs=[];
-
-// ===== QUEUE DE SAVE : agrège les mutations et envoie un seul PUT =====
-var pendingSave=false, saveInFlight=false;
-function scheduleSave(){
-  pendingSave=true;
-  if(saveInFlight) return;
-  flushSave();
-}
-function flushSave(){
-  if(!pendingSave) return;
-  pendingSave=false;
-  saveInFlight=true;
-  sync('⏳ Sync…','#a29bfe');
-  fetch(BIN_URL,{method:'PUT',headers:HEADERS,body:JSON.stringify(S)})
-  .then(function(){
-    saveInFlight=false;
-    sync('✅ Synchronisé · '+now());
-    if(pendingSave) flushSave();
-  })
-  .catch(function(){
-    saveInFlight=false;
-    sync('⚠️ Erreur sync — réessai…','#fdcb6e');
-    setTimeout(function(){if(pendingSave) flushSave();else{pendingSave=true;flushSave();}},2000);
-  });
-}
-
-function todayIdx(){
-  var t=new Date();
-  if(t.getFullYear()===YEAR&&t.getMonth()===MONTH) return t.getDate()-1;
-  return 13;
-}
 
 function dayLabel(dayStr){
   var idx=parseInt(dayStr.split('-')[2]);
@@ -407,7 +182,7 @@ function assess(i){
   return{cumul:cumul,objOk:o>0&&cumul>=o,boostOk:s>=MIN_BOOST,o:o,r:r,s:s};
 }
 
-// ===== MERGE anti-régression : appliqué UNIQUEMENT lors d'un load depuis serveur =====
+// === LECTURE SEULE : aucun PUT n'existe dans ce code ===
 function loadShared(){
   return fetch(BIN_URL,{headers:{'X-Master-Key':API_KEY}})
   .then(function(r){return r.json();})
@@ -415,105 +190,41 @@ function loadShared(){
     var p=j.record||j;
     if(Array.isArray(p.obj)&&p.obj.length===30) S.obj=p.obj;
     if(Array.isArray(p.rep)&&p.rep.length===30) S.rep=p.rep;
-    // Anti-régression : si le serveur a une valeur plus grande que la locale, on prend le max
-    // sauf si la locale est null (jamais saisie) auquel cas on prend le serveur tel quel
-    if(Array.isArray(p.sal)&&p.sal.length===30){
-      for(var i=0;i<30;i++){
-        if(p.sal[i]!==null&&S.sal[i]!==null&&p.sal[i]<S.sal[i]) p.sal[i]=S.sal[i];
-      }
-      S.sal=p.sal;
-    }
-    if(Array.isArray(p.rdv)&&p.rdv.length===30){
-      for(var i=0;i<30;i++){
-        if(p.rdv[i]!==null&&S.rdv[i]!==null&&p.rdv[i]<S.rdv[i]) p.rdv[i]=S.rdv[i];
-      }
-      S.rdv=p.rdv;
-    }
+    if(Array.isArray(p.sal)&&p.sal.length===30) S.sal=p.sal;
+    if(Array.isArray(p.rdv)&&p.rdv.length===30) S.rdv=p.rdv;
     if(Array.isArray(p.jokers)&&p.jokers.length===30) S.jokers=p.jokers;
     if(p.milestones) S.milestones=p.milestones;
     if(Array.isArray(p.events)) S.events=p.events;
     if(Array.isArray(p.wonTickets)) S.wonTickets=p.wonTickets;
     if(Array.isArray(p.trophies)) S.trophies=p.trophies;
-    var ti=todayIdx(),todayStr=YEAR+'-'+(MONTH+1)+'-'+ti;
-    if(S.milestones&&(S.milestones.day!==ti||!S.milestones.m1||!S.milestones.m2)) S.milestones=null;
-    wonTickets=S.wonTickets.filter(function(t){return t.day===todayStr;});
-    updateTicketsBar();
-    var tt=S.trophies?S.trophies.filter(function(t){return t.day===todayStr;}):[];
-    for(var k=0;k<tt.length;k++) addTrophyDisplay(tt[k].icon,tt[k].label);
-    var todayStart=new Date(YEAR,MONTH,ti+1).getTime();
-    lastSeenEventTs=parseInt(localStorage.getItem('lastSeenEventTs')||'0');
-    if(lastSeenEventTs<todayStart) lastSeenEventTs=todayStart;
-    var allNew=S.events.filter(function(ev){return ev.ts>lastSeenEventTs;});
-    if(allNew.length>0){
-      lastSeenEventTs=allNew[allNew.length-1].ts;
-      localStorage.setItem('lastSeenEventTs',''+lastSeenEventTs);
-      var toPlay=allNew.filter(function(ev){return ev.type==='floating'||ev.type==='celebration';});
-      for(var i=0;i<toPlay.length;i++) playEvent(toPlay[i]);
-    }
   })
   .catch(function(e){sync('⚠️ Erreur : '+e.message,'#fdcb6e');});
-}
-
-function pushEvent(type,data){if(!S.events) S.events=[];S.events.push({type:type,data:data||{},ts:Date.now()});}
-
-function playEvent(ev){
-  if(ev.type==='floating') showFloatingIcon(ev.data.icon,ev.data.label,ev.data.size);
-  else if(ev.type==='celebration') showCelebration(ev.data.kind);
 }
 
 function sync(m,c){var b=document.getElementById('syncBar');b.textContent=m;b.style.color=c||'#55efc4';}
 function now(){return new Date().toLocaleTimeString('fr-FR');}
 
-function manualRefresh(){
-  sync('⏳ Mise à jour…');
-  loadShared().then(function(){render();sync('✅ Mis à jour · '+now());});
-}
+function render(){renderBilan();renderBooster();renderTotals();renderCalendar();updateTicketsBar();}
 
-function autoRefresh(){
-  loadShared().then(function(){render();});
-}
-
-function render(){renderToday();renderBooster();renderTotals();renderCalendar();}
-
-function renderToday(){
-  var ti=todayIdx(),d=new Date(YEAR,MONTH,ti+1);
-  document.getElementById('tcDate').textContent=DAYS[d.getDay()]+' '+(ti+1)+' Avril '+YEAR;
-  var a=assess(ti);
-  document.getElementById('kRep').textContent=a.r;
-  document.getElementById('kSal').textContent=S.sal[ti]!==null?a.s:'—';
-  document.getElementById('kCum').textContent=(S.sal[ti]!==null||a.r>0)?a.cumul:'—';
-  document.getElementById('kObj').textContent=a.o||'—';
-  var pO=a.o>0?Math.min(Math.round(a.cumul/a.o*100),100):0;
-  var bO=document.getElementById('barObj');
-  bO.style.width=pO+'%';
-  bO.style.background=a.objOk?'linear-gradient(90deg,#00b894,#00cec9)':'linear-gradient(90deg,#d63031,#e17055)';
-  document.getElementById('barObjTxt').textContent=a.o>0?a.cumul+' / '+a.o+' ('+pO+'%)':'Cliquer sur le jour →';
-  document.getElementById('lblObj').textContent=a.o>0?pO+'%':'—';
-  var bg=document.getElementById('barBoostGroup');
-  if(!BOOSTER_DAY[ti]){bg.style.display='none';}
-  else{
-    bg.style.display='block';
-    var pB=Math.min(Math.round(a.s/MIN_BOOST*100),100),bB=document.getElementById('barBoost');
-    bB.style.width=pB+'%';
-    bB.style.background=a.boostOk?'linear-gradient(90deg,#00b894,#00cec9)':pB>=50?'linear-gradient(90deg,#f9ca24,#ffd700)':'linear-gradient(90deg,#b8860b,#f9ca24)';
-    document.getElementById('barBoostTxt').textContent=a.s+' / 16';
-    document.getElementById('lblBoost').textContent=a.s+'/16';
+function renderBilan(){
+  var totVentes=0,totObj=0,totRdv=0;
+  for(var i=0;i<30;i++){
+    if(S.sal[i]!==null) totVentes+=S.sal[i];
+    if(S.obj[i]>0) totObj+=S.obj[i];
+    if(S.rdv[i]!==null) totRdv+=S.rdv[i];
   }
-  // IMPORTANT : ne pas écraser l'input si l'utilisateur est en train de saisir
-  var iSalEl=document.getElementById('iSal');
-  if(S.sal[ti]!==null&&document.activeElement!==iSalEl) iSalEl.value=S.sal[ti];
-  var iRdvEl=document.getElementById('iRdv');
-  if(S.rdv[ti]!==null&&document.activeElement!==iRdvEl) iRdvEl.value=S.rdv[ti];
+  document.getElementById('kTotVentes').textContent=totVentes;
+  document.getElementById('kTotObj').textContent=totObj;
+  document.getElementById('kTotRdv').textContent=totRdv;
+  var pct=totObj>0?Math.round(totVentes/totObj*100)+'%':'—';
+  document.getElementById('kPct').textContent=pct;
 }
 
 function renderBooster(){
-  var ti=todayIdx(),jokersUsed=0,fails=0,daysOk=0,status=[];
+  var jokersUsed=0,fails=0,daysOk=0,status=[];
   for(var i=0;i<30;i++){
     if(!BOOSTER_DAY[i]){status.push('nowork');continue;}
-    if(i>ti){status.push('future');continue;}
-    if((S.obj[i]||0)===0){status.push('future');continue;}
-    if(S.sal[i]===null){status.push(i===ti?'today':'future');continue;}
-    if(i===ti){if(assess(i).boostOk){status.push('ok');daysOk++;}else status.push('today');continue;}
+    if((S.obj[i]||0)===0||S.sal[i]===null){status.push('future');continue;}
     if(assess(i).boostOk){status.push('ok');daysOk++;}
     else if(S.jokers[i]&&jokersUsed<MAX_JOKERS){status.push('joker');jokersUsed++;}
     else{status.push('fail');fails++;}
@@ -522,22 +233,22 @@ function renderBooster(){
   var p=document.getElementById('bpPanel');
   p.className='bp '+(alive?(jokersUsed>0?'bp-risk':'bp-alive'):'bp-lost');
   document.getElementById('bpIcon').textContent=alive?(jokersUsed>0?'🃏':'⚡'):'💥';
-  document.getElementById('bpTitle').textContent=alive?'Booster +25% — EN JEU':'Booster +25% — PERDU';
+  document.getElementById('bpTitle').textContent=alive?'Booster +25% — VALIDÉ ✅':'Booster +25% — PERDU 💥';
   document.getElementById('bpSub').textContent=alive
-    ?daysOk+' jour'+(daysOk>1?'s':'')+' validé'+(daysOk>1?'s':'')+' · '+jLeft+' joker'+(jLeft!==1?'s':'')+' restant'+(jLeft!==1?'s':'')
+    ?daysOk+' jour'+(daysOk>1?'s':'')+' validé'+(daysOk>1?'s':'')+' · '+jokersUsed+' joker'+(jokersUsed!==1?'s':'')+' utilisé'+(jokersUsed!==1?'s':'')
     :fails+' jour'+(fails>1?'s':'')+' sans joker — booster perdu';
   var g=document.getElementById('bpGrid');g.innerHTML='';
   for(var i=0;i<30;i++){
     var el=document.createElement('div');el.className='bpd '+status[i];
     el.innerHTML='<span>'+(i+1)+'</span><div>'+(status[i]==='ok'?'⚡':status[i]==='fail'?'❌':status[i]==='joker'?'🃏':'')+'</div>';
-    (function(idx){el.onclick=function(){openModal(idx);};})(i);
+    (function(idx){el.onclick=function(){openModal(idx);};el.style.cursor='pointer';})(i);
     g.appendChild(el);
   }
 }
 
 function renderTotals(){
-  var ti=todayIdx(),totC=0,totO=0,ok=0,fail=0;
-  for(var i=0;i<=ti;i++){
+  var totC=0,totO=0,ok=0,fail=0;
+  for(var i=0;i<30;i++){
     var s=S.sal[i],o=S.obj[i]||0;
     if(s!==null){totC+=s;if(o>0)totO+=o;if(o>0&&BOOSTER_DAY[i]){if(assess(i).boostOk)ok++;else fail++;}}
   }
@@ -551,14 +262,11 @@ function renderTotals(){
 
 function renderCalendar(){
   var cal=document.getElementById('calendar');cal.innerHTML='';
-  var ti=todayIdx();
   for(var i=0;i<30;i++){
     var d=new Date(YEAR,MONTH,i+1),a=assess(i),s=S.sal[i];
-    var isToday=i===ti,isFut=i>ti,worked=WORKED[i];
+    var worked=WORKED[i];
     var cls='dc ',res='',badge='',repHtml='';
-    if(isToday){cls+='dc-today';if(a.r>0)repHtml='<div class="drep">☀️+'+a.r+'</div>';if(s!==null)res='<div class="dres">'+a.cumul+'/'+a.o+'</div>';}
-    else if(isFut){cls+=worked?'dc-future':'dc-offday';}
-    else if(!worked){cls+='dc-offday';if(s!==null){if(a.r>0)repHtml='<div class="drep">☀️+'+a.r+'</div>';res='<div class="dres">'+a.cumul+'/'+a.o+'</div>';}}
+    if(!worked){cls+='dc-offday';if(s!==null){if(a.r>0)repHtml='<div class="drep">☀️+'+a.r+'</div>';res='<div class="dres">'+a.cumul+'/'+a.o+'</div>';}}
     else if(s!==null){
       if(BOOSTER_DAY[i]){
         cls+=a.boostOk&&a.objOk?'dc-ok':a.boostOk||a.objOk?'dc-min':'dc-fail';
@@ -577,308 +285,66 @@ function renderCalendar(){
       '<div class="dn">'+(i+1)+'</div>'+
       (a.o>0?'<div class="dobj">🎯'+a.o+'</div>':'<div class="dobj" style="opacity:.3">'+(worked?'—':'')+'</div>')+
       repHtml+res;
-    (function(idx){cell.onclick=function(){openModal(idx);};})(i);
+    (function(idx){cell.onclick=function(){openModal(idx);};cell.style.cursor='pointer';})(i);
     cal.appendChild(cell);
   }
 }
 
-function adjSal(v){var el=document.getElementById('iSal');el.value=Math.max(0,(parseInt(el.value)||0)+v);}
-function adjRdv(v){var el=document.getElementById('iRdv');el.value=Math.max(0,(parseInt(el.value)||0)+v);}
-
-// ===== SAVE RDV : immédiat, sans re-fetch =====
-function saveRdv(){
-  var ti=todayIdx();
-  var rdv=parseInt(document.getElementById('iRdv').value);
-  if(isNaN(rdv)||rdv<0){showToast('❌ Valeur invalide');return;}
-  var prev=S.rdv[ti]||0;
-  var added=rdv-prev;
-  S.rdv[ti]=rdv;
-  render();
-  if(added>0){for(var n=0;n<added;n++){(function(d){setTimeout(function(){spawnFlyingPhone();},d);})(n*180);}}
-  var newT=Math.floor(rdv/3),prevT=Math.floor(prev/3);
-  if(newT>prevT){
-    for(var t=prevT+1;t<=newT;t++){
-      (function(tr){
-        var prize=RDV_PRIZES[Math.floor(Math.random()*RDV_PRIZES.length)];
-        setTimeout(function(){spawnMiniTicket(prize);},tr*300);
-      })(t);
+function openModal(i){
+  var d=new Date(YEAR,MONTH,i+1);
+  document.getElementById('modalTitle').textContent='📅 '+DAYS[d.getDay()]+' '+(i+1)+' Avril';
+  var a=assess(i),s=S.sal[i],rdv=S.rdv[i];
+  var body=document.getElementById('modalBody');
+  var html='';
+  html+='<div class="detail-row"><span class="dl">🎯 Objectif</span><span class="dv">'+(S.obj[i]||'—')+'</span></div>';
+  html+='<div class="detail-row"><span class="dl">☀️ Report matin</span><span class="dv">'+(S.rep[i]||0)+'</span></div>';
+  html+='<div class="detail-row"><span class="dl">✍️ Ventes nettes</span><span class="dv">'+(s!==null?s:'—')+'</span></div>';
+  if(s!==null) html+='<div class="detail-row"><span class="dl">📦 Cumul total</span><span class="dv">'+a.cumul+'</span></div>';
+  html+='<div class="detail-row"><span class="dl">📞 RDV transférés</span><span class="dv">'+(rdv!==null?rdv:'—')+'</span></div>';
+  if(s!==null&&S.obj[i]>0){
+    var pct=Math.round(a.cumul/S.obj[i]*100);
+    html+='<div class="detail-row"><span class="dl">📈 Atteinte objectif</span><span class="dv" style="color:'+(a.objOk?'#55efc4':'#ff7675')+'">'+pct+'%</span></div>';
+  }
+  if(BOOSTER_DAY[i]&&s!==null){
+    html+='<div class="detail-row"><span class="dl">⚡ Booster (≥16)</span><span class="dv" style="color:'+(a.boostOk?'#55efc4':S.jokers[i]?'#a29bfe':'#ff7675')+'">'+(a.boostOk?'✅ Validé':S.jokers[i]?'🃏 Joker':'❌ Raté')+'</span></div>';
+  }
+  if(!WORKED[i]){
+    html='<div style="text-align:center;padding:14px;opacity:.6;font-size:.85rem">'+(i===5?'🐣 Lundi de Pâques':'🛌 Week-end')+'</div>'+html;
+  }
+  var todayStr=YEAR+'-'+(MONTH+1)+'-'+i;
+  var dayTickets=S.wonTickets?S.wonTickets.filter(function(t){return t.day===todayStr;}):[];
+  if(dayTickets.length){
+    html+='<div style="margin-top:12px;font-size:.78rem;font-weight:800;color:#f9ca24;margin-bottom:6px">🎟️ Bons gagnés ce jour</div>';
+    for(var k=0;k<dayTickets.length;k++){
+      var tk=dayTickets[k];
+      var bg=tk.rdv?'linear-gradient(135deg,#00b894,#00cec9)':'linear-gradient(135deg,#f9ca24,#f0932b)';
+      var col=tk.rdv?'#fff':'#1a1a2e';
+      html+='<div style="background:'+bg+';border-radius:8px;padding:6px 10px;font-size:.74rem;font-weight:700;color:'+col+';margin-bottom:4px">'+tk.icon+(tk.rdv?' 📞':'')+' '+(tk.tri?tk.tri+' — ':'')+tk.label+'</div>';
     }
   }
-  showToast('✅ RDV mis à jour !');
-  scheduleSave();
-}
-
-function spawnFlyingPhone(){
-  var x=(15+Math.random()*70);
-  var el=document.createElement('div');
-  el.className='fly-phone';
-  el.style.left=x+'vw';
-  el.style.bottom='80px';
-  el.textContent='📞';
-  document.body.appendChild(el);
-  setTimeout(function(){el.remove();},1200);
-}
-
-function spawnMiniTicket(prize){
-  var ti=todayIdx(),todayStr=YEAR+'-'+(MONTH+1)+'-'+ti;
-  var duration=TICKET_DURATIONS.rdv;
-  var el=document.createElement('div');
-  el.className='ticket-anim anim-rdv';
-  el.style.left=(15+Math.random()*70)+'vw';
-  el.style.top=(35+Math.random()*25)+'vh';
-  el.style.fontSize='2.8rem';
-  el.style.filter='drop-shadow(0 0 15px #00cec9) drop-shadow(0 0 30px #00b894)';
-  el.innerHTML='📞<div class="tc-label" style="background:#00cec9">CLIC !</div>'+
-    '<div class="tc-timer"><div class="tc-timer-fill" style="animation-duration:'+duration+'ms"></div></div>';
-  document.body.appendChild(el);
-  var fill=el.querySelector('.tc-timer-fill');
-  var critTimer=setTimeout(function(){if(fill&&fill.parentNode)fill.classList.add('critical');},Math.max(0,duration-3000));
-  el.onclick=function(){
-    clearTimeout(critTimer);
-    el.remove();
-    var ov=document.createElement('div');ov.className='ticket-popup';
-    ov.innerHTML='<div class="ticket-card" style="background:linear-gradient(135deg,#00b894,#00cec9)">'+
-      '<div class="tc-icon">'+prize.icon+'</div>'+
-      '<div class="tc-title" style="color:#fff">📞 Bonus RDV !</div>'+
-      '<div class="tc-prize" style="color:#fff;background:rgba(255,255,255,.2)">'+prize.label+'</div>'+
-      '<div class="tc-sub" style="color:#fff">Entre ton trigramme pour réclamer !</div>'+
-      '<input class="tri-input" id="triRdvInput" type="text" maxlength="3" placeholder="ex: CLR" style="margin-bottom:10px">'+
-      '<button class="tc-btn" id="claimRdvBtn" style="background:#fff;color:#00b894">✅ Réclamer !</button>'+
-      '</div>';
-    document.body.appendChild(ov);
-    setTimeout(function(){var inp=document.getElementById('triRdvInput');if(inp)inp.focus();},100);
-    document.getElementById('claimRdvBtn').onclick=function(){
-      var tri=document.getElementById('triRdvInput').value.trim().toUpperCase();
-      if(tri.length<2){showToast('❌ Entre ton trigramme !');return;}
-      saveClaim({icon:prize.icon,label:prize.label,day:todayStr,collectif:false,tri:tri,ts:Date.now(),rdv:true});
-      ov.remove();showToast('📞 Bon RDV attribué à '+tri+' !');
-    };
-  };
-  setTimeout(function(){if(el.parentNode){el.remove();showToast('💨 Bonus RDV envolé !');}},duration);
-}
-
-// ===== SAVE VENTES : immédiat, sans re-fetch =====
-function saveVentes(){
-  var ti=todayIdx();
-  if(!WORKED[ti]){showToast('⛔ Pas de challenge aujourd\'hui !');return;}
-  var sal=parseInt(document.getElementById('iSal').value);
-  if(isNaN(sal)||sal<0){showToast('❌ Indiquer les ventes');return;}
-  var prev=S.sal[ti]||0,added=sal-prev,rep=S.rep[ti]||0,obj=S.obj[ti]||0;
-  var prevCumul=prev+rep,newCumul=sal+rep;
-  var prevBoostHalf=prev>=8,prevObjHalf=obj>0&&prevCumul>=Math.round(obj*0.5);
-  var prevBoost=prev>=MIN_BOOST,prevObj=obj>0&&prevCumul>=obj;
-  var todayStr=YEAR+'-'+(MONTH+1)+'-'+ti;
-  S.sal[ti]=sal;
-  if(!S.events) S.events=[];
-  if(!S.milestones||S.milestones.day!==ti||!S.milestones.m1||!S.milestones.m2){
-    var mid=Math.max(1,Math.round(obj*0.5)),sc=rep;
-    var m1=Math.round(sc+1+Math.random()*Math.max(0,mid-sc-2));
-    var m2=Math.round(mid+1+Math.random()*Math.max(0,obj-mid-2));
-    if(m1<=sc)m1=sc+1;if(m1>=mid)m1=Math.max(sc+1,mid-1);
-    if(m2<=mid)m2=mid+1;if(m2>=obj)m2=obj-1;if(m2<=m1)m2=m1+1;
-    if(m1<=0||m1>=obj)m1=Math.max(1,Math.round(obj*0.3));
-    if(m2<=m1||m2>=obj)m2=Math.round(obj*0.7);
-    S.milestones={day:ti,m1:m1,m2:m2,m1done:m1<=prevCumul,m2done:m2<=prevCumul,
-      boostDone:prev>=MIN_BOOST,earlyBirdDone:false,
-      prizeSeq:[],lastIndIdx:-1,lastColIdx:-1};
-  }
-  if(!S.milestones.prizeSeq) S.milestones.prizeSeq=[];
-  if(S.milestones.lastIndIdx===undefined) S.milestones.lastIndIdx=-1;
-  if(S.milestones.lastColIdx===undefined) S.milestones.lastColIdx=-1;
-
-  render();
-  if(added>0){for(var n=0;n<added;n++){(function(d){setTimeout(function(){spawnPlusOne(1);},d);})(n*150);}}
-  var a=assess(ti);
-  // Les milestones ne se déclenchent que si on MONTE au-dessus (added > 0)
-  if(added>0){
-    if(obj>0&&!S.milestones.m1done&&prevCumul<S.milestones.m1&&newCumul>=S.milestones.m1){
-      S.milestones.m1done=true;var ts1=Date.now();var p1=pickNextPrize(S.milestones);
-      pushEvent('ticket',{prize:p1,ts:ts1});setTimeout(function(){spawnGoldenTicketForAll(p1,ts1,'jalon');},400);
-    }
-    if(obj>0&&!S.milestones.m2done&&prevCumul<S.milestones.m2&&newCumul>=S.milestones.m2){
-      S.milestones.m2done=true;var ts2=Date.now()+1;var p2=pickNextPrize(S.milestones);
-      pushEvent('ticket',{prize:p2,ts:ts2});setTimeout(function(){spawnGoldenTicketForAll(p2,ts2,'jalon');},400);
-    }
-    if(BOOSTER_DAY[ti]&&!prevBoostHalf&&sal>=8){pushEvent('floating',{icon:'⚡',label:'50% Booster !',size:'medium'});showFloatingIcon('⚡','50% Booster !','medium');}
-    if(BOOSTER_DAY[ti]&&a.boostOk&&!prevBoost){
-      if(!S.milestones.boostDone){
-        S.milestones.boostDone=true;var ts3=Date.now()+2;var p3=pickNextPrize(S.milestones);
-        pushEvent('ticket',{prize:p3,ts:ts3});setTimeout(function(){spawnBonusTicket(p3,ts3,'boost');},600);
-      }
-      pushEvent('floating',{icon:'⚡',label:'BOOSTER DÉCLENCHÉ !',size:'big'});pushEvent('celebration',{kind:'boost'});
-      showFloatingIcon('⚡','BOOSTER DÉCLENCHÉ !','big');showCelebration('boost');
-    }
-    if(obj>0&&!prevObjHalf&&newCumul>=Math.round(obj*0.5)){pushEvent('floating',{icon:'🎯',label:'50% Objectif !',size:'medium'});showFloatingIcon('🎯','50% Objectif !','medium');}
-    if(a.objOk&&!prevObj){pushEvent('floating',{icon:'🎯',label:'OBJECTIF ATTEINT !',size:'big'});pushEvent('celebration',{kind:'obj'});showFloatingIcon('🎯','OBJECTIF ATTEINT !','big');showCelebration('obj');}
-    if(BOOSTER_DAY[ti]&&!S.milestones.earlyBirdDone&&sal>=7&&(new Date().getHours()<14)){
-      S.milestones.earlyBirdDone=true;var tseb=Date.now()+3;var pb=pickNextPrize(S.milestones);
-      pushEvent('floating',{icon:'🌅',label:'EARLY BIRD !',size:'big'});
-      pushEvent('earlybird',{prize:pb,ts:tseb});
-      spawnEarlyBirdAnim();
-      setTimeout(function(){spawnGoldenTicketForAll(pb,tseb,'earlybird');},1500);addTrophy('🌅','Early Bird !',todayStr);
-    }
-    if(BOOSTER_DAY[ti]&&a.boostOk&&sal>=20){
-      var newTr=Math.floor((sal-20)/5)+1,prevTr=prev>=20?Math.floor((prev-20)/5)+1:0;
-      if(newTr>prevTr){for(var t=prevTr+1;t<=newTr;t++){(function(tr){var tst=Date.now()+tr*10;var pt=pickNextPrize(S.milestones);
-        pushEvent('floating',{icon:'🚀',label:'TURBO x'+tr+' !',size:'big'});
-        pushEvent('turbo',{prize:pt,tranche:tr,ts:tst});
-        setTimeout(function(){spawnBonusTicket(pt,tst,'turbo');addTrophy('🚀','Turbo x'+tr,todayStr);},tr*400);})(t);}}
+  var dayTrophies=S.trophies?S.trophies.filter(function(t){return t.day===todayStr;}):[];
+  if(dayTrophies.length){
+    html+='<div style="margin-top:12px;font-size:.78rem;font-weight:800;color:#a29bfe;margin-bottom:6px">🏅 Trophées</div>';
+    for(var k=0;k<dayTrophies.length;k++){
+      var tr=dayTrophies[k];
+      html+='<div style="background:linear-gradient(135deg,#a29bfe,#6c5ce7);border-radius:8px;padding:6px 10px;font-size:.74rem;font-weight:700;color:#fff;margin-bottom:4px">'+tr.icon+' '+tr.label+'</div>';
     }
   }
-  showToast('✅ Ventes mises à jour !');
-  scheduleSave();
+  body.innerHTML=html;
+  document.getElementById('modalBg').classList.add('open');
 }
 
-function spawnPlusOne(n){
-  var el=document.createElement('div');el.className='plus-one';el.textContent='+'+n;
-  el.style.left=(20+Math.random()*60)+'vw';el.style.top='60vh';
-  document.body.appendChild(el);
-  requestAnimationFrame(function(){requestAnimationFrame(function(){
-    el.style.transition='all 1.1s cubic-bezier(.22,.61,.36,1)';el.style.opacity='1';el.style.top='20vh';el.style.transform='scale(1.2)';
-    setTimeout(function(){el.style.opacity='0';el.style.transform='scale(0.8)';setTimeout(function(){el.remove();},500);},700);
-  });});
-}
-
-var TICKET_DURATIONS={jalon:12000,boost:15000,earlybird:10000,turbo:8000,rdv:10000};
-function spawnGoldenTicketForAll(prize,ts,type){
-  if(ts&&collectedTicketTs.indexOf(ts)>=0)return;
-  type=type||'jalon';
-  var duration=TICKET_DURATIONS[type]||12000;
-  var el=document.createElement('div');el.className='ticket-anim anim-'+type;
-  if(type==='jalon'){
-    el.style.left=(5+Math.random()*20)+'vw';
-    el.style.top=(10+Math.random()*30)+'vh';
-  }else if(type==='earlybird'){
-    el.style.left=(20+Math.random()*60)+'vw';
-    el.style.top=(25+Math.random()*40)+'vh';
-  }
-  el.innerHTML='🎟️<div class="tc-label">👆 CLIC !</div>'+
-    '<div class="tc-timer"><div class="tc-timer-fill" style="animation-duration:'+duration+'ms"></div></div>';
-  document.body.appendChild(el);
-  var fill=el.querySelector('.tc-timer-fill');
-  var criticalDelay=Math.max(0,duration-3000);
-  var critTimer=setTimeout(function(){if(fill&&fill.parentNode)fill.classList.add('critical');},criticalDelay);
-  el.onclick=function(){clearTimeout(critTimer);el.remove();prize.ts=ts;showTicketWon(prize);};
-  setTimeout(function(){if(el.parentNode){el.remove();showToast('💨 Le bon s\'est envolé !');}},duration);
-}
-
-function spawnBonusTicket(prize,ts,type){
-  type=type||'boost';
-  var el=document.createElement('div');
-  el.style.cssText='position:fixed;left:50%;bottom:-10%;transform:translateX(-50%);z-index:750;font-size:6rem;transition:all 1.2s cubic-bezier(.22,.61,.36,1);pointer-events:none';
-  el.textContent='🚀';document.body.appendChild(el);
-  requestAnimationFrame(function(){requestAnimationFrame(function(){el.style.bottom='110%';setTimeout(function(){el.remove();spawnGoldenTicketForAll(prize,ts,type);},1200);});});
-  launchConfetti();setTimeout(launchConfetti,400);setTimeout(launchConfetti,800);
-}
-
-function spawnEarlyBirdAnim(){
-  var el=document.createElement('div');
-  el.style.cssText='position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) scale(0);z-index:750;text-align:center;pointer-events:none;transition:all .6s cubic-bezier(.34,1.56,.64,1)';
-  el.innerHTML='<div style="font-size:9rem;filter:drop-shadow(0 0 40px #f9ca24)">🌅</div><div style="font-size:1.6rem;font-weight:900;color:#f9ca24;text-shadow:0 0 20px gold;margin-top:8px">EARLY BIRD !</div><div style="font-size:1rem;font-weight:700;color:#fff;opacity:.9;margin-top:4px">7 contrats avant 14h !</div>';
-  document.body.appendChild(el);
-  requestAnimationFrame(function(){requestAnimationFrame(function(){
-    el.style.transform='translate(-50%,-50%) scale(1)';
-    setTimeout(function(){el.style.transition='all .8s ease';el.style.opacity='0';el.style.transform='translate(-50%,-80%) scale(.8)';setTimeout(function(){el.remove();},800);},2500);
-  });});
-  launchConfetti();setTimeout(launchConfetti,300);setTimeout(launchConfetti,600);
-}
-
-function showFloatingIcon(icon,label,size){
-  var isBig=size==='big';
-  var el=document.createElement('div');
-  el.style.cssText='position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) scale(0);z-index:750;text-align:center;pointer-events:none;transition:all .5s cubic-bezier(.34,1.56,.64,1)';
-  el.innerHTML='<div style="font-size:'+(isBig?'10rem':'5rem')+';line-height:1;filter:drop-shadow(0 0 '+(isBig?'40px':'20px')+' gold) drop-shadow(0 0 '+(isBig?'80px':'40px')+' gold)">'+icon+'</div><div style="font-size:'+(isBig?'1.8rem':'1rem')+';font-weight:900;color:#f9ca24;text-shadow:0 0 20px gold;margin-top:8px;white-space:nowrap">'+label+'</div>';
-  document.body.appendChild(el);
-  requestAnimationFrame(function(){requestAnimationFrame(function(){
-    el.style.transform='translate(-50%,-50%) scale(1)';
-    setTimeout(function(){el.style.transition='all .8s ease';el.style.transform='translate(-50%,-160%) scale('+(isBig?'0.6':'0.4')+')';el.style.opacity='0';setTimeout(function(){el.remove();},800);},(isBig?1800:1200));
-  });});
-  if(isBig){launchConfetti();setTimeout(launchConfetti,300);setTimeout(launchConfetti,600);}
-}
-
-function showCelebration(type){
-  var ov=document.createElement('div');ov.className='celebration-overlay';
-  var icon,title,sub,cls;
-  if(type==='obj'){icon='🎯';title='OBJECTIF<br>ATTEINT !';sub='L\'équipe est en feu ! 🔥';cls='obj-card';}
-  else{icon='⚡';title='BOOSTER<br>+25% VALIDÉ !';sub='Le bonus est déclenché ! 💰';cls='boost-card';}
-  ov.innerHTML='<div class="celebration-card '+cls+'"><span class="cc-icon">'+icon+'</span><div class="cc-title">'+title+'</div><div class="cc-sub">'+sub+'</div><button onclick="this.closest(\'.celebration-overlay\').remove()">🔥 LET\'S GO !</button></div>';
-  document.body.appendChild(ov);
-}
-
-function showTicketWon(prize){
-  var ti=todayIdx(),todayStr=YEAR+'-'+(MONTH+1)+'-'+ti;
-  var ov=document.createElement('div');ov.className='ticket-popup';
-  if(prize.collectif){
-    ov.innerHTML='<div class="ticket-card"><div class="tc-icon">'+prize.icon+'</div><div class="tc-title">🎉 BON COLLECTIF !</div><div class="tc-prize">'+prize.label+'</div><div class="tc-sub">Toute l\'équipe en profite !</div><button class="tc-btn" id="claimCollectifBtn">🎊 On y a droit !</button></div>';
-    document.body.appendChild(ov);
-    document.getElementById('claimCollectifBtn').onclick=function(){saveClaim({icon:prize.icon,label:prize.label,day:todayStr,collectif:true,tri:'ÉQUIPE',ts:prize.ts||Date.now()});ov.remove();showToast('🎉 Bon collectif enregistré !');};
-  }else{
-    ov.innerHTML='<div class="ticket-card"><div class="tc-icon">'+prize.icon+'</div><div class="tc-title">🎉 BON INDIVIDUEL !</div><div class="tc-prize">'+prize.label+'</div><div class="tc-sub">Entre ton trigramme !</div><input class="tri-input" id="triInput" type="text" maxlength="3" placeholder="ex: CLR"><button class="tc-btn" id="claimIndBtn">✅ Réclamer !</button></div>';
-    document.body.appendChild(ov);
-    setTimeout(function(){var inp=document.getElementById('triInput');if(inp)inp.focus();},100);
-    document.getElementById('claimIndBtn').onclick=function(){
-      var tri=document.getElementById('triInput').value.trim().toUpperCase();
-      if(tri.length<2){showToast('❌ Entre ton trigramme !');return;}
-      saveClaim({icon:prize.icon,label:prize.label,day:todayStr,collectif:false,tri:tri,ts:prize.ts||Date.now()});
-      ov.remove();showToast('🎉 Bon attribué à '+tri+' !');
-    };
-  }
-  launchConfetti();
-}
-
-// ===== SAVE CLAIM : immédiat =====
-function saveClaim(prize){
-  if(prize.ts)collectedTicketTs.push(prize.ts);
-  if(!S.wonTickets)S.wonTickets=[];
-  S.wonTickets.push(prize);
-  wonTickets=S.wonTickets.filter(function(t){return t.day===prize.day;});
-  updateTicketsBar();
-  scheduleSave();
-}
+function closeModal(){document.getElementById('modalBg').classList.remove('open');}
 
 function updateTicketsBar(){
   var bar=document.getElementById('ticketsBar'),list=document.getElementById('ticketsList');
-  if(!wonTickets||!wonTickets.length){bar.style.display='none';return;}
+  var allTickets=S.wonTickets||[];
+  if(!allTickets.length){bar.style.display='none';return;}
   bar.style.display='flex';list.innerHTML='';
-  for(var i=0;i<wonTickets.length;i++){
-    var t=wonTickets[i];
-    var btn=document.createElement('div');
-    btn.className='ticket-won'+(t.rdv?' rdv-ticket':'');
-    btn.textContent=t.icon+' '+(t.tri?t.tri+' — ':'')+t.label+(t.rdv?' 📞':'');
-    (function(idx){btn.onclick=function(){
-      var w=wonTickets[idx];
-      var ov=document.createElement('div');ov.className='ticket-popup';
-      var cardBg=w.rdv?'background:linear-gradient(135deg,#00b894,#00cec9)':'';
-      var btnStyle=w.rdv?'background:#fff;color:#00b894':'';
-      ov.innerHTML='<div class="ticket-card" style="'+cardBg+'">'+
-        '<div class="tc-icon">'+w.icon+'</div>'+
-        '<div class="tc-title" style="'+(w.rdv?'color:#fff':'')+'">'+(w.rdv?'📞 Bon RDV':(w.tri?'🏅 '+w.tri:'Bon collectif'))+'</div>'+
-        '<div class="tc-prize" style="'+(w.rdv?'color:#fff;background:rgba(255,255,255,.2)':'')+'">'+w.label+'</div>'+
-        '<div class="tc-sub" style="'+(w.rdv?'color:#fff':'')+'">'+
-          (w.rdv?'Attribué à '+w.tri:'À réclamer auprès du manager !')+
-        '</div>'+
-        '<button class="tc-btn" style="'+btnStyle+'" onclick="this.closest(&quot;.ticket-popup&quot;).remove()">Fermer</button>'+
-        '</div>';
-      document.body.appendChild(ov);
-    };})(i);
-    list.appendChild(btn);
-  }
-}
-
-function addTrophy(icon,label,todayStr){
-  if(!S.trophies)S.trophies=[];
-  S.trophies.push({icon:icon,label:label,day:todayStr});
-  addTrophyDisplay(icon,label);
-}
-
-function addTrophyDisplay(icon,label){
-  var key=icon+label;
-  if(shownTrophies.indexOf(key)>=0)return;
-  shownTrophies.push(key);
-  var bar=document.getElementById('trophiesBar'),list2=document.getElementById('trophiesList');
-  bar.style.display='flex';
-  var t=document.createElement('div');t.className='trophy-item';t.textContent=icon+' '+label;
-  list2.appendChild(t);
+  var count=document.createElement('div');
+  count.style.cssText='font-size:.72rem;opacity:.85;font-weight:700;width:100%';
+  count.textContent=allTickets.length+' bon'+(allTickets.length>1?'s':'')+' au total — voir détail dans le palmarès complet';
+  list.appendChild(count);
 }
 
 function weekIdxOfDay(dayIdx){
@@ -896,7 +362,6 @@ function weekRangeLabel(weekIdx){
   return (s+1)+' avril → '+(e+1)+' avril';
 }
 
-function getCurrentWeekIdx(){return weekIdxOfDay(todayIdx());}
 function dayIdxFromStr(dayStr){return parseInt(dayStr.split('-')[2]);}
 
 function showPalmares(){
@@ -904,7 +369,6 @@ function showPalmares(){
   var allEb=S.trophies?S.trophies.filter(function(t){return t.icon==='🌅';}):[];
   var allTb=S.trophies?S.trophies.filter(function(t){return t.icon==='🚀';}):[];
   var allBons=S.wonTickets||[];
-  var currentWeek=getCurrentWeekIdx();
   var weeks={};
   function bucket(w){if(!weeks[w])weeks[w]={eb:[],tb:[],bonsVentes:[],bonsRdv:[]};return weeks[w];}
   for(var i=0;i<allEb.length;i++){var w=weekIdxOfDay(dayIdxFromStr(allEb[i].day));bucket(w).eb.push(allEb[i]);}
@@ -915,25 +379,20 @@ function showPalmares(){
     if(b.rdv) bucket(w).bonsRdv.push(b);
     else bucket(w).bonsVentes.push(b);
   }
-  bucket(currentWeek);
-  var weekIdxs=Object.keys(weeks).map(function(x){return parseInt(x);}).sort(function(a,b){return b-a;});
+  var weekIdxs=Object.keys(weeks).map(function(x){return parseInt(x);}).sort(function(a,b){return a-b;});
   var html='<div style="background:#1e1e3f;border-radius:24px;padding:24px;max-width:420px;width:94%;max-height:85vh;overflow-y:auto">'+
-    '<div style="font-size:1.4rem;font-weight:900;text-align:center;margin-bottom:18px">🏆 Palmarès du mois</div>';
+    '<div style="font-size:1.4rem;font-weight:900;text-align:center;margin-bottom:18px">🏆 Palmarès — Avril 2026</div>';
+  if(!weekIdxs.length){
+    html+='<div style="text-align:center;opacity:.5;padding:20px">Aucun trophée ni bon enregistré</div>';
+  }
   for(var wi=0;wi<weekIdxs.length;wi++){
     var w=weekIdxs[wi];
     var data=weeks[w];
-    var isCurrent=(w===currentWeek);
-    var isFuture=(w>currentWeek);
-    if(isFuture) continue;
     var rangeLbl=weekRangeLabel(w);
     var totalItems=data.eb.length+data.tb.length+data.bonsVentes.length+data.bonsRdv.length;
-    var headBg=isCurrent?'linear-gradient(135deg,#6c5ce7,#a29bfe)':'rgba(255,255,255,.06)';
-    var headColor=isCurrent?'#fff':'#a29bfe';
-    var weekTitle=isCurrent?'📍 Semaine en cours':'Semaine du '+rangeLbl;
-    var openAttr=isCurrent?'open':'';
-    html+='<details '+openAttr+' class="pal-week" style="margin-bottom:10px;border-radius:14px;overflow:hidden;background:rgba(255,255,255,.03)">'+
-      '<summary style="background:'+headBg+';color:'+headColor+';padding:10px 14px;font-weight:800;font-size:.88rem;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:8px">'+
-        '<span>'+weekTitle+(isCurrent?'':' <span style="opacity:.6;font-weight:700;font-size:.75rem">('+rangeLbl+')</span>')+'</span>'+
+    html+='<details open class="pal-week" style="margin-bottom:10px;border-radius:14px;overflow:hidden;background:rgba(255,255,255,.03)">'+
+      '<summary style="background:rgba(255,255,255,.06);color:#a29bfe;padding:10px 14px;font-weight:800;font-size:.88rem;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:8px">'+
+        '<span>Semaine du <span style="opacity:.7;font-weight:700;font-size:.78rem">'+rangeLbl+'</span></span>'+
         '<span style="font-size:.72rem;opacity:.85;font-weight:700">'+(totalItems>0?totalItems+' 🏅':'—')+'</span>'+
       '</summary>'+
       '<div style="padding:12px 14px 14px 14px">';
@@ -963,140 +422,13 @@ function showPalmares(){
   ov.innerHTML=html;document.body.appendChild(ov);
 }
 
-function replayCelebrations(){
-  var ti=todayIdx(),todayStart=new Date(YEAR,MONTH,ti+1).getTime();
-  var evs=S.events?S.events.filter(function(ev){
-    return ev.ts>=todayStart&&(ev.type==='celebration'||ev.type==='floating'||ev.type==='earlybird'||ev.type==='turbo');
-  }):[];
-  if(!evs.length){showToast('Aucune célébration aujourd\'hui encore !');return;}
-  var delay=0;
-  for(var i=0;i<evs.length;i++){
-    (function(ev,d){setTimeout(function(){
-      if(ev.type==='floating'||ev.type==='celebration') playEvent(ev);
-      else if(ev.type==='earlybird') showFloatingIcon('🌅','EARLY BIRD !','big');
-      else if(ev.type==='turbo') showFloatingIcon('🚀','TURBO x'+(ev.data.tranche||'')+'!','big');
-    },d);})(evs[i],delay);
-    delay+=2000;
-  }
-}
-
-function launchConfetti(){
-  var c=document.getElementById('cc'),cols=['#f9ca24','#6c5ce7','#00b894','#fd79a8','#fdcb6e','#a29bfe'];
-  for(var i=0;i<80;i++){
-    var el=document.createElement('div');
-    el.style.cssText='position:absolute;width:9px;height:9px;border-radius:'+(Math.random()>.5?'50%':'2px')+';background:'+cols[Math.floor(Math.random()*cols.length)]+';left:'+(Math.random()*100)+'%;top:-10px;opacity:1;transition:all '+(1+Math.random()*1.5)+'s ease';
-    c.appendChild(el);
-    (function(e){setTimeout(function(){e.style.top=(60+Math.random()*40)+'vh';e.style.left=(parseFloat(e.style.left)+(-20+Math.random()*40))+'%';e.style.opacity='0';},50);setTimeout(function(){e.remove();},2500);})(el);
-  }
-}
-
-function showToast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2500);}
-
-var editIdx=-1;
-function openModal(i){
-  editIdx=i;
-  var d=new Date(YEAR,MONTH,i+1);
-  document.getElementById('modalTitle').textContent='📅 '+DAYS[d.getDay()]+' '+(i+1)+' Avril';
-  document.getElementById('mObj').value=S.obj[i]||'';
-  document.getElementById('mRep').value=S.rep[i]||'';
-  document.getElementById('mSal').value=S.sal[i]!==null?S.sal[i]:'';
-  document.getElementById('mRdv').value=S.rdv[i]!==null?S.rdv[i]:'';
-  document.getElementById('mJoker').checked=S.jokers[i]||false;
-  var todayStr=YEAR+'-'+(MONTH+1)+'-'+i;
-  var dayTickets=S.wonTickets?S.wonTickets.filter(function(t){return t.day===todayStr;}):[];
-  var list=document.getElementById('mTicketsList');list.innerHTML='';
-  if(!dayTickets.length){list.innerHTML='<span style="font-size:.72rem;opacity:.5">Aucun bon</span>';}
-  else{
-    for(var k=0;k<dayTickets.length;k++){
-      var tk=dayTickets[k];
-      var el=document.createElement('div');
-      var bg=tk.rdv?'linear-gradient(135deg,#00b894,#00cec9)':'linear-gradient(135deg,#f9ca24,#f0932b)';
-      var col=tk.rdv?'#fff':'#1a1a2e';
-      el.style.cssText='background:'+bg+';border-radius:8px;padding:4px 8px;font-size:.7rem;font-weight:800;color:'+col+';display:flex;align-items:center;gap:4px;margin-bottom:2px';
-      el.innerHTML=tk.icon+(tk.rdv?' 📞':'')+' '+(tk.tri?tk.tri+' — ':'')+tk.label;
-      var del=document.createElement('span');del.textContent='❌';del.style.cssText='cursor:pointer;margin-left:4px';
-      (function(ds,kk){del.onclick=function(){removeModalTicket(ds,kk);};})(todayStr,k);
-      el.appendChild(del);list.appendChild(el);
-    }
-  }
-  var addDiv=document.getElementById('mAddTickets');addDiv.innerHTML='';
-  for(var m=0;m<ALL_PRIZES.length;m++){
-    var pr=ALL_PRIZES[m];
-    var btn=document.createElement('button');
-    btn.style.cssText='background:rgba(249,202,36,.15);border:1px solid rgba(249,202,36,.4);color:#f9ca24;border-radius:8px;padding:4px 8px;font-size:.68rem;font-weight:800;cursor:pointer;font-family:Nunito,sans-serif;margin-bottom:3px';
-    btn.textContent='+ '+pr.icon+' '+pr.label.substring(0,22)+(pr.label.length>22?'…':'');
-    (function(prize,di,ds){btn.onclick=function(){addModalTicket(prize,ds,di,false);};})(pr,i,todayStr);
-    addDiv.appendChild(btn);
-  }
-  var addRdvDiv=document.getElementById('mAddRdvTickets');addRdvDiv.innerHTML='';
-  for(var m=0;m<RDV_PRIZES.length;m++){
-    var pr=RDV_PRIZES[m];
-    var btn=document.createElement('button');
-    btn.style.cssText='background:rgba(0,206,201,.15);border:1px solid rgba(0,206,201,.4);color:#00cec9;border-radius:8px;padding:4px 8px;font-size:.68rem;font-weight:800;cursor:pointer;font-family:Nunito,sans-serif;margin-bottom:3px';
-    btn.textContent='+ '+pr.icon+' '+pr.label.substring(0,22)+(pr.label.length>22?'…':'');
-    (function(prize,di,ds){btn.onclick=function(){addModalTicket(prize,ds,di,true);};})(pr,i,todayStr);
-    addRdvDiv.appendChild(btn);
-  }
-  document.getElementById('modalBg').classList.add('open');
-}
-
-function addModalTicket(prize,todayStr,dayIdx2,isRdv){
-  var tri='ÉQUIPE';
-  if(isRdv||!prize.collectif){
-    var input=prompt('Trigramme du commercial :','');
-    if(!input)return;
-    tri=input.toUpperCase().trim();
-  }
-  var t={icon:prize.icon,label:prize.label,day:todayStr,collectif:isRdv?false:(prize.collectif||false),tri:tri,ts:Date.now()};
-  if(isRdv) t.rdv=true;
-  if(!S.wonTickets)S.wonTickets=[];S.wonTickets.push(t);
-  var ti=todayIdx();if(dayIdx2===ti){wonTickets.push(t);updateTicketsBar();}
-  showToast('✅ Bon ajouté !');
-  scheduleSave();
-  openModal(dayIdx2);
-}
-
-function removeModalTicket(todayStr,idx){
-  if(!S.wonTickets)return;
-  var dt=S.wonTickets.filter(function(t){return t.day===todayStr;});
-  var toRemove=dt[idx];S.wonTickets=S.wonTickets.filter(function(t){return t!==toRemove;});
-  var ti=todayIdx(),ts=YEAR+'-'+(MONTH+1)+'-'+ti;
-  wonTickets=S.wonTickets.filter(function(t){return t.day===ts;});
-  updateTicketsBar();openModal(editIdx);showToast('🗑️ Bon supprimé !');
-  scheduleSave();
-}
-
-function closeModal(){document.getElementById('modalBg').classList.remove('open');editIdx=-1;}
-
-// ===== SAVE MODALE : immédiat, sans re-fetch =====
-function saveModal(){
-  if(editIdx<0)return;
-  var o=parseInt(document.getElementById('mObj').value),r=parseInt(document.getElementById('mRep').value);
-  var s=document.getElementById('mSal').value,rdv=document.getElementById('mRdv').value;
-  var idx=editIdx;
-  var ti=todayIdx();
-  var newSal=s!==''&&!isNaN(parseInt(s))?parseInt(s):null;
-  var newObj=!isNaN(o)&&o>=0?o:0;
-  var newRep=!isNaN(r)&&r>=0?r:0;
-  var newRdv=rdv!==''&&!isNaN(parseInt(rdv))?parseInt(rdv):null;
-  var newJoker=document.getElementById('mJoker').checked;
-  S.obj[idx]=newObj;S.rep[idx]=newRep;S.sal[idx]=newSal;S.rdv[idx]=newRdv;S.jokers[idx]=newJoker;
-  if(idx===ti&&S.sal[ti]!==null)document.getElementById('iSal').value=S.sal[ti];
-  if(idx===ti&&S.rdv[ti]!==null)document.getElementById('iRdv').value=S.rdv[ti];
-  render();closeModal();showToast('✅ Mis à jour !');
-  scheduleSave();
-}
-
 document.getElementById('modalBg').onclick=function(e){if(e.target===document.getElementById('modalBg'))closeModal();};
 
 function init(){
   loadShared().then(function(){
     document.getElementById('app').style.display='block';
-    var ti=todayIdx();
-    if(S.sal[ti]!==null)document.getElementById('iSal').value=S.sal[ti];
-    if(S.rdv[ti]!==null)document.getElementById('iRdv').value=S.rdv[ti];
-    sync('✅ Prêt · '+now());render();
-    setInterval(autoRefresh, 15*60*1000);
+    sync('✅ Archive chargée · '+now());
+    render();
   });
 }
 init();
